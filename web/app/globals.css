@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+}
+
+* {
+  border-color: rgb(255 255 255 / 0.1);
+}
+
+body {
+  @apply bg-background text-foreground antialiased;
+  background-image:
+    radial-gradient(circle at 20% 10%, rgba(37, 99, 235, 0.25), transparent 35%),
+    radial-gradient(circle at 80% 5%, rgba(6, 182, 212, 0.18), transparent 30%),
+    radial-gradient(circle at 30% 90%, rgba(20, 184, 166, 0.12), transparent 25%);
+  min-height: 100vh;
+}
+
+main {
+  @apply relative z-10;
+}
+
+.container-wrap {
+  @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+}
+
+.glow-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.45), transparent);
+}
+
+.section-title {
+  @apply text-3xl font-semibold tracking-tight text-white sm:text-4xl;
+}
+
+.section-subtitle {
+  @apply mt-4 max-w-3xl text-base text-slate-300 sm:text-lg;
+}
+
+.grid-soft {
+  background-size: 42px 42px;
+}
+
+@keyframes accordion-down {
+  from {
+    height: 0;
+  }
+  to {
+    height: var(--radix-accordion-content-height);
+  }
+}
+
+@keyframes accordion-up {
+  from {
+    height: var(--radix-accordion-content-height);
+  }
+  to {
+    height: 0;
+  }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.25s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.25s ease-out;
+}

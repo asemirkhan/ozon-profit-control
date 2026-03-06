@@ -1,0 +1,69 @@
+{
+  "result": {
+    "postings": [
+      {
+        "posting_number": "123456-0001-1",
+        "status": "delivered",
+        "created_at": "2026-02-15T10:00:00Z",
+        "in_process_at": "2026-02-15T10:10:00Z",
+        "shipped_at": "2026-02-16T08:30:00Z",
+        "delivered_at": "2026-02-18T15:00:00Z",
+        "delivery_method": {
+          "schema": "FBS"
+        },
+        "analytics_data": {
+          "warehouse_id": "WH-01",
+          "region": "Moscow"
+        },
+        "is_multibox": false,
+        "products": [
+          {
+            "offer_id": "offer-1",
+            "sku": "sku-1",
+            "product_id": "prod-1",
+            "quantity": 1,
+            "price": "1590.00",
+            "currency": "RUB"
+          },
+          {
+            "offer_id": "offer-2",
+            "sku": "sku-2",
+            "product_id": "prod-2",
+            "quantity": 2,
+            "price": "990.00",
+            "currency": "RUB"
+          }
+        ],
+        "financial_data": {
+          "products": [
+            {
+              "product_id": "prod-1",
+              "sku": "sku-1",
+              "quantity": 1,
+              "price": "1590.00",
+              "old_price": "1790.00",
+              "total_discount_value": "200.00",
+              "total_discount_percent": "11.17",
+              "commission_amount": "120.00",
+              "commission_percent": "7.55",
+              "payout": "1320.00",
+              "item_services_total": "50.00"
+            }
+          ]
+        }
+      },
+      {
+        "posting_number": "123456-0002-1",
+        "status": "awaiting_packaging",
+        "created_at": "2026-02-20T09:00:00Z",
+        "products": [
+          {
+            "quantity": 1,
+            "price": "500.00"
+          }
+        ]
+      }
+    ],
+    "last_id": ""
+  }
+}

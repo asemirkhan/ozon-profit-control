@@ -1,0 +1,27 @@
+{
+  "result": {
+    "items": [
+      {
+        "offer_id": "offer-1",
+        "product_id": 1001,
+        "sku": 5001,
+        "name": "Sample Product A",
+        "brand": "Brand A",
+        "category_id": 10,
+        "category_name": "Category A",
+        "archived": false
+      },
+      {
+        "offer_id": "offer-2",
+        "product_id": 1002,
+        "sku": 5002,
+        "name": "Sample Product B",
+        "brand": "Brand B",
+        "category_id": 20,
+        "category_name": "Category B",
+        "archived": true
+      }
+    ],
+    "last_id": ""
+  }
+}

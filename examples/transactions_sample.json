@@ -1,0 +1,57 @@
+{
+  "result": {
+    "operations": [
+      {
+        "operation_id": "op-1001",
+        "operation_date": "2026-02-10T12:10:00Z",
+        "operation_type": "OperationAgentDeliveredToCustomer",
+        "operation_type_name": "Delivered to customer",
+        "posting_number": "123456-0001-1",
+        "accruals_for_sale": "1590.00",
+        "sale_commission": "120.00",
+        "delivery_charge": "50.00",
+        "return_delivery_charge": "0.00",
+        "amount": "1420.00",
+        "services": [
+          {
+            "name": "delivery",
+            "price": "50.00"
+          },
+          {
+            "name": "acquiring",
+            "price": "20.00"
+          }
+        ],
+        "items": [
+          {
+            "sku": "sku-1",
+            "name": "Sample Product A"
+          },
+          {
+            "sku": "sku-2",
+            "name": "Sample Product B"
+          }
+        ]
+      },
+      {
+        "operation_id": "op-1002",
+        "operation_date": "2026-02-12T09:30:00Z",
+        "operation_type_name": "Some other operation",
+        "amount": "-100.00",
+        "services": [],
+        "items": [
+          {
+            "sku": "sku-3",
+            "name": "Sample Product C"
+          }
+        ]
+      },
+      {
+        "operation_id": "op-1003",
+        "operation_date": "2026-02-14T14:00:00Z",
+        "operation_type": "OperationCorrection",
+        "amount": "10.00"
+      }
+    ]
+  }
+}
