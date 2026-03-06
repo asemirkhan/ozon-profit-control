@@ -9,8 +9,14 @@ export function Pain() {
   return (
     <section className="py-16 sm:py-20">
       <div className="container-wrap">
-        <h2 className="section-title">Знакомо?</h2>
-        <p className="section-subtitle">Эти симптомы почти всегда означают, что деньги “утекают” в деталях, которые не видно в отчётах маркетплейса.</p>
+        <h2 className="section-title">Похоже на ваш магазин?</h2>
+        <p className="section-subtitle">
+          Выплаты вроде нормальные, продажи есть, но реальная прибыль оказывается меньше, чем ожидалось.
+          <br />
+          <br />
+          Чаще всего деньги “теряются” в десятках мелких решений: реклама, логистика, габариты, возвраты и
+          корректировки.
+        </p>
 
         <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {painPoints.map((point, idx) => (

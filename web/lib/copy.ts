@@ -6,9 +6,9 @@ const leadForm = process.env.NEXT_PUBLIC_LEAD_FORM?.trim();
 export const leadUrl = leadForm || tgLink || 'https://t.me';
 
 export const heroProofs = [
-  'Прибыль по товарам',
-  'Логистика и услуги разложены по полкам',
-  'ТОП-5 действий на 2 недели'
+  'Какие товары реально зарабатывают',
+  'Где именно теряются деньги',
+  'Что исправить в ближайшие 14 дней'
 ];
 
 export const painPoints = [
