@@ -1,0 +1,8 @@
+node_modules
+.next
+.next-*
+.next_*
+.next_stale_*
+tsconfig.tsbuildinfo
+*.log
+.DS_Store
