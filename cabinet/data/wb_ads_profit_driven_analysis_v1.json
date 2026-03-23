@@ -1,0 +1,241 @@
+{
+  "date": "2026-03-23",
+  "schema": "client_wb_probe_2",
+  "periods": {
+    "7d": {
+      "available": true
+    },
+    "30d": {
+      "available": true
+    },
+    "90d": {
+      "available": false
+    }
+  },
+  "summary": {
+    "ok_count": 3,
+    "hypothesis_count": 2,
+    "action_count": 0,
+    "noise_count": 3,
+    "top1_spend_share": 45.87,
+    "top3_spend_share": 97.67,
+    "top3_signal_count": 2
+  },
+  "products": [
+    {
+      "sku": "2045741712711",
+      "product_name": "Деревянный автомобильный гараж для машин с разметкой дороги",
+      "status": "HYPOTHESIS",
+      "reasons": [
+        "cpo_7d_up_vs_30d_profit_still_positive"
+      ],
+      "period_7": {
+        "spend": 5445.77,
+        "orders": 28.0,
+        "revenue": 38400.0,
+        "cost_per_order": 194.49,
+        "revenue_per_order": 1371.43,
+        "profit_per_order_before_ads": 1041.35,
+        "profit_per_order_after_ads": 846.86
+      },
+      "period_30": {
+        "spend": 20341.41,
+        "orders": 137.0,
+        "revenue": 158700.0,
+        "cost_per_order": 148.48,
+        "revenue_per_order": 1158.39,
+        "profit_per_order_before_ads": 1097.59,
+        "profit_per_order_after_ads": 949.11
+      },
+      "period_90": null
+    },
+    {
+      "sku": "2047590184015",
+      "product_name": "Набор для творчества для девочек \"Феи Единороги Балерины\"",
+      "status": "OK",
+      "reasons": [],
+      "period_7": {
+        "spend": 3451.66,
+        "orders": 39.0,
+        "revenue": 56962.0,
+        "cost_per_order": 88.5,
+        "revenue_per_order": 1460.56,
+        "profit_per_order_before_ads": 780.01,
+        "profit_per_order_after_ads": 691.51
+      },
+      "period_30": {
+        "spend": 18788.08,
+        "orders": 194.0,
+        "revenue": 272088.0,
+        "cost_per_order": 96.85,
+        "revenue_per_order": 1402.52,
+        "profit_per_order_before_ads": 786.22,
+        "profit_per_order_after_ads": 689.37
+      },
+      "period_90": null
+    },
+    {
+      "sku": "mshcm120621",
+      "product_name": "Деревянная парковка для машинок автомобильный гараж",
+      "status": "HYPOTHESIS",
+      "reasons": [
+        "cpo_7d_up_vs_30d_profit_still_positive"
+      ],
+      "period_7": {
+        "spend": 1763.09,
+        "orders": 26.0,
+        "revenue": 20599.0,
+        "cost_per_order": 67.81,
+        "revenue_per_order": 792.27,
+        "profit_per_order_before_ads": 940.55,
+        "profit_per_order_after_ads": 872.74
+      },
+      "period_30": {
+        "spend": 4180.82,
+        "orders": 84.0,
+        "revenue": 49199.0,
+        "cost_per_order": 49.77,
+        "revenue_per_order": 585.7,
+        "profit_per_order_before_ads": 898.48,
+        "profit_per_order_after_ads": 848.71
+      },
+      "period_90": null
+    },
+    {
+      "sku": "2027380695624",
+      "product_name": "Деревянный гараж с трамплином и лифтом для машинок большой",
+      "status": "OK",
+      "reasons": [],
+      "period_7": {
+        "spend": 487.0,
+        "orders": 12.0,
+        "revenue": 12900.0,
+        "cost_per_order": 40.58,
+        "revenue_per_order": 1075.0,
+        "profit_per_order_before_ads": 2152.37,
+        "profit_per_order_after_ads": 2111.79
+      },
+      "period_30": {
+        "spend": 790.78,
+        "orders": 15.0,
+        "revenue": 12900.0,
+        "cost_per_order": 52.72,
+        "revenue_per_order": 860.0,
+        "profit_per_order_before_ads": 2159.26,
+        "profit_per_order_after_ads": 2106.54
+      },
+      "period_90": null
+    },
+    {
+      "sku": "2027621386625",
+      "product_name": "Деревянный автомобильный гараж для машинок парковка",
+      "status": "OK",
+      "reasons": [],
+      "period_7": {
+        "spend": 208.28,
+        "orders": 6.0,
+        "revenue": 0.0,
+        "cost_per_order": 34.71,
+        "revenue_per_order": 0.0,
+        "profit_per_order_before_ads": 1412.47,
+        "profit_per_order_after_ads": 1377.76
+      },
+      "period_30": {
+        "spend": 211.4,
+        "orders": 6.0,
+        "revenue": 0.0,
+        "cost_per_order": 35.23,
+        "revenue_per_order": 0.0,
+        "profit_per_order_before_ads": 1406.95,
+        "profit_per_order_after_ads": 1371.72
+      },
+      "period_90": null
+    },
+    {
+      "sku": "2042982777462",
+      "product_name": "Деревянная парковка для машинок со скотч дорогой и азс",
+      "status": "NOISE",
+      "reasons": [
+        "small_volume"
+      ],
+      "period_7": {
+        "spend": 0.05,
+        "orders": 0.0,
+        "revenue": 0.0,
+        "cost_per_order": null,
+        "revenue_per_order": null,
+        "profit_per_order_before_ads": 1449.41,
+        "profit_per_order_after_ads": null
+      },
+      "period_30": {
+        "spend": 23.19,
+        "orders": 4.0,
+        "revenue": 0.0,
+        "cost_per_order": 5.8,
+        "revenue_per_order": 0.0,
+        "profit_per_order_before_ads": 1438.58,
+        "profit_per_order_after_ads": 1432.78
+      },
+      "period_90": null
+    },
+    {
+      "sku": "bshcm120621",
+      "product_name": "Большой Гараж для машинок Парковка деревянная с горкой",
+      "status": "NOISE",
+      "reasons": [
+        "small_volume"
+      ],
+      "period_7": {
+        "spend": 0.0,
+        "orders": 0.0,
+        "revenue": 0.0,
+        "cost_per_order": null,
+        "revenue_per_order": null,
+        "profit_per_order_before_ads": 1103.37,
+        "profit_per_order_after_ads": null
+      },
+      "period_30": {
+        "spend": 4.58,
+        "orders": 0.0,
+        "revenue": 0.0,
+        "cost_per_order": null,
+        "revenue_per_order": null,
+        "profit_per_order_before_ads": 1985.84,
+        "profit_per_order_after_ads": null
+      },
+      "period_90": null
+    },
+    {
+      "sku": "2047591296052",
+      "product_name": "Набор для творчества \"Супергерои\"",
+      "status": "NOISE",
+      "reasons": [
+        "small_volume"
+      ],
+      "period_7": {
+        "spend": 0.0,
+        "orders": 0.0,
+        "revenue": 0.0,
+        "cost_per_order": null,
+        "revenue_per_order": null,
+        "profit_per_order_before_ads": 478.26,
+        "profit_per_order_after_ads": null
+      },
+      "period_30": {
+        "spend": 1.41,
+        "orders": 1.0,
+        "revenue": 1320.0,
+        "cost_per_order": 1.41,
+        "revenue_per_order": 1320.0,
+        "profit_per_order_before_ads": 690.38,
+        "profit_per_order_after_ads": 688.97
+      },
+      "period_90": null
+    }
+  ],
+  "insights": [
+    "Концентрация бюджета выводится вместе с profit-driven контекстом: в `TOP-3` по spend есть `2` товар(а) со статусом `HYPOTHESIS/ACTION`.",
+    "По товару `Деревянный автомобильный гараж для машин с разметкой дороги` за последние дни реклама стала дороже — стоимость заказа выросла, при этом прибыль с заказа снизилась.",
+    "По товару `Деревянная парковка для машинок автомобильный гараж` за последние дни реклама стала дороже — стоимость заказа выросла, при этом прибыль с заказа снизилась."
+  ]
+}
