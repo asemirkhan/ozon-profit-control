@@ -36,6 +36,8 @@ Profit Control собирает данные магазинов на марке�
 - Движок рекомендаций: `src/services/recommendation_engine_v2.py`; сбор клиентских наборов выполняется scripts-раннерами.
 - Кабинет: `cabinet/`; публичный сайт: `web/`.
 
+Landing в `web/` запускается из этого каталога через `npm ci` и `npm run dev`; production build — `npm run build`. Проверенные переменные из `web/lib/copy.ts`: `NEXT_PUBLIC_BRAND_NAME`, `NEXT_PUBLIC_TG_LINK`, `NEXT_PUBLIC_LEAD_FORM`; заполненный lead form имеет приоритет над Telegram-ссылкой. Для Vercel Root Directory — `web`. Не хранить приватные credentials в `NEXT_PUBLIC_*`: они публикуются в браузере.
+
 Это ориентиры по коду, не гарантия полноты или корректности. При перемещении кода обновлять этот раздел в той же итерации.
 
 Наблюдаемый runtime проходит bootstrap → загрузка required sources → marts → analytics/recommendation packs → cabinet. Ограничение одного необязательного источника не должно молча маркировать общий результат полным. Контейнеры подключают рабочий код и локальную БД; для воспроизводимого production нужна сборка из фиксированного commit/image.
