@@ -23,9 +23,10 @@ This plan orders the requested work by dependency. Each phase is closed with evi
 
 1. Produce a read-only inventory of source freshness, interval gaps, request outcomes, and measured durations from the database and saved run evidence.
 2. Replace date-maximum or wall-clock skip decisions where they can hide incomplete ranges with source-specific completion evidence. Preserve existing finance closeout semantics.
-3. Make retries and resumable checkpoints explicit for capped, 429-limited, and interrupted source runs. Confirm empty-but-successful reports can be marked complete.
-4. Improve service startup ordering and health reporting so runtime waits for PostgreSQL readiness and reports a failed phase clearly.
-5. When a valid token is available, run the automatic recovery from the stored per-source checkpoint through the current date; measure duration, requests, retries, rows, date coverage, duplicates, and reconciliation. Do not call this phase complete before a live run proves it.
+3. Remove insecure `WB_SSL_NO_VERIFY=1` defaults from routine entry points; use verified system/custom CA trust and fail clearly when trust is unavailable.
+4. Make retries and resumable checkpoints explicit for capped, 429-limited, and interrupted source runs. Confirm empty-but-successful reports can be marked complete.
+5. Improve service startup ordering and health reporting so runtime waits for PostgreSQL readiness and reports a failed phase clearly.
+6. When a valid token is available, run the automatic recovery from the stored per-source checkpoint through the current date; measure duration, requests, retries, rows, date coverage, duplicates, and reconciliation. Do not call this phase complete before a live run proves it.
 
 **Acceptance:** each source has a recorded checkpoint and covered interval; no freshness skip masks a required gap; interrupted runs resume safely; 429/401/network failures are distinguishable and actionable; repeated load is idempotent; full automatic recovery and data-quality checks pass with a valid token.
 

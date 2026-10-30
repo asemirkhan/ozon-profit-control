@@ -37,6 +37,7 @@ These dates describe stored rows, not proof that every interval, campaign, wareh
 - Request history runs only through 2026-09-10. It contains 71 orders requests with HTTP 401, 29 orders requests with HTTP 429, and 3,568 ads requests with HTTP 429. Historical successful request latency averages: sales 6.12 seconds (273 requests), orders 3.08 seconds (33), ads 17.75 seconds (686). These are old request-level numbers, not current catch-up durations.
 - A saved March 2026 sales comparison recorded one cumulative request in 1.57 seconds versus ten safe requests in 627.04 seconds for the same 709 rows. This is a useful optimization result, not an end-to-end automatic collection benchmark.
 - Current runtime has no common last-success watermark. Freshness checks vary by source and some use only maximum event date, which can hide gaps. The read-only audit also found source-specific resume/completion weaknesses: orders can hit a response cap without an incremental resume point; ads can skip windows based on date maximum; stock relies partly on wall-clock logs; successful empty paid-storage windows are not consistently persisted.
+- Code-path review confirmed the specific runtime risks: sales can be skipped when its maximum sale date is recent even if earlier dates are missing; the bulk sales runner requests one page and does not enforce a complete-page/interval proof; orders runner uses cursor pagination but caps each run at two pages and the runtime skip decision checks only maximum order date; ads has campaign-window state internally, but the runtime can bypass it when any row reaches the target date. WB source entry points also default TLS verification off via `WB_SSL_NO_VERIFY=1`; this must be corrected before routine credentialed operation.
 - A historical ads run hit rate limits in every tested window; finance and paid-storage artifacts also document network/rate-limit deferrals.
 
 ## External dependencies and open decisions
@@ -48,6 +49,6 @@ These dates describe stored rows, not proof that every interval, campaign, wareh
 
 ## Immediate next actions
 
-1. Use the saved database and run records to design source-specific completion checkpoints and an offline reliability fix plan.
+1. Remove insecure TLS defaults and replace maximum-date runtime skips with checks against persisted source-specific completion state; preserve API rate limits and make orders resume across runs.
 2. Classify the existing worktree before removing project material; retain only reviewed source, reproducible assets, and canonical documentation.
 3. Co-design agent instructions and the adversarial-review acceptance rubric before routing implementation work.
