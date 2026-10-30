@@ -1,7 +1,9 @@
 'use client';
 
+import { AlertTriangle, CheckCircle2, Info } from 'lucide-react';
+
 type AttentionStateTone = 'ok' | 'warning' | 'critical';
-type AttentionSectionTone = 'ok' | 'warning';
+type AttentionSectionTone = 'ok' | 'warning' | 'critical';
 
 export type AttentionStateItem = {
   key: string;
@@ -28,9 +30,15 @@ type Props = {
 };
 
 const statusText: Record<AttentionStateTone, string> = {
-  ok: 'В норме',
-  warning: 'Есть зоны внимания',
-  critical: 'Требует внимания',
+  ok: 'Критических отклонений не выявлено',
+  warning: 'Есть сигналы, на которые стоит обратить внимание',
+  critical: 'Есть критические отклонения, которые требуют действий',
+};
+
+const statusIcon = {
+  ok: CheckCircle2,
+  warning: Info,
+  critical: AlertTriangle,
 };
 
 function InlineLink({ href, label }: { href: string; label: string }) {
@@ -42,11 +50,16 @@ function InlineLink({ href, label }: { href: string; label: string }) {
 }
 
 export function AttentionStatePanel({ title, tone, sections, statusTextOverride }: Props) {
+  const StatusIcon = statusIcon[tone];
+
   return (
     <section className="panel section">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="m-0 text-lg font-semibold">{title}</h2>
-        <div className={`status-pill status-pill--${tone}`}>{statusTextOverride ?? statusText[tone]}</div>
+        <div className={`status-indicator status-indicator--${tone}`} aria-label={statusTextOverride ?? statusText[tone]}>
+          <StatusIcon size={18} strokeWidth={2.2} />
+          <span className="status-indicator__tooltip">{statusTextOverride ?? statusText[tone]}</span>
+        </div>
       </div>
 
       <div className="attention-state mt-4">

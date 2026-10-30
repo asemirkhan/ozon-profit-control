@@ -29,9 +29,9 @@ def normalize_postings_fbs(
                 logger.warning("Skip posting without posting_number")
                 continue
 
-            created_at = _as_str(_pick(posting, "created_at", "createdAt"))
-            if not created_at:
-                logger.warning("Skip posting %s without created_at", posting_number)
+            posting_created_at = _resolve_posting_created_at(posting)
+            if not posting_created_at:
+                logger.warning("Skip posting %s without any supported created_at fallback field", posting_number)
                 continue
 
             status = _as_str(_pick(posting, "status")) or "UNKNOWN"
@@ -44,8 +44,9 @@ def normalize_postings_fbs(
             rows_posting.append(
                 {
                     "posting_number": posting_number,
+                    "marketplace": "ozon",
                     "status": status,
-                    "created_at": created_at,
+                    "created_at": posting_created_at,
                     "in_process_at": _as_str(_pick(posting, "in_process_at", "inProcessAt")),
                     "shipped_at": _as_str(_pick(posting, "shipped_at", "shippedAt")),
                     "delivered_at": _as_str(_pick(posting, "delivered_at", "deliveredAt")),
@@ -79,6 +80,7 @@ def normalize_postings_fbs(
                 rows_items.append(
                     {
                         "posting_number": posting_number,
+                        "marketplace": "ozon",
                         "offer_id": offer_id,
                         "sku": sku,
                         "product_id": product_id,
@@ -157,6 +159,7 @@ def _normalize_financial_rows(
         rows.append(
             {
                 "posting_number": posting_number,
+                "marketplace": "ozon",
                 "product_id": product_id,
                 "sku": sku,
                 "quantity": quantity,
@@ -177,6 +180,23 @@ def _normalize_financial_rows(
         )
 
     return rows
+
+
+def _resolve_posting_created_at(posting: Mapping[str, Any]) -> str | None:
+    cancellation = posting.get("cancellation")
+    cancellation_map = cancellation if isinstance(cancellation, Mapping) else {}
+
+    candidates = (
+        _as_str(_pick(posting, "created_at", "createdAt")),
+        _as_str(_pick(posting, "in_process_at", "inProcessAt")),
+        _as_str(_pick(posting, "shipment_date", "shipmentDate")),
+        _as_str(_pick(posting, "delivering_date", "deliveringDate")),
+        _as_str(_pick(cancellation_map, "cancelled_after_ship", "cancelledAfterShip")),
+    )
+    for value in candidates:
+        if value:
+            return value
+    return None
 
 
 def _build_product_lookup(products: list[Mapping[str, Any]]) -> dict[str, str]:

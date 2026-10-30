@@ -17,13 +17,57 @@ import {
 } from 'recharts';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { actionPlan, costShare, productReportRows, profitByDay, topProducts } from '@/lib/demoData';
+import { actionPlan, productReportRows, profitByDay, topProducts } from '@/lib/demoData';
 
 const PIE_COLORS = ['#38bdf8', '#22d3ee', '#2dd4bf', '#93c5fd'];
+const RADIAN = Math.PI / 180;
+
+const leakageBreakdown = [
+  { name: 'Доставка', label: 'Доставка', amount: 128400, share: 38 },
+  { name: 'Услуги маркетплейса', label: 'Услуги МП', amount: 96700, share: 29 },
+  { name: 'Реклама', label: 'Реклама', amount: 73500, share: 22 },
+  { name: 'Возвраты и корректировки', label: 'Возвраты', amount: 38900, share: 11 }
+];
 
 function money(value: number) {
   const sign = value < 0 ? '−' : '';
   return `${sign}${new Intl.NumberFormat('ru-RU').format(Math.abs(value))} ₽`;
+}
+
+function shortK(value: number) {
+  return `${(value / 1000).toFixed(1)}к`;
+}
+
+function renderLeakageLabel({
+  cx = 0,
+  cy = 0,
+  midAngle = 0,
+  outerRadius = 0,
+  payload
+}: {
+  cx?: number;
+  cy?: number;
+  midAngle?: number;
+  outerRadius?: number;
+  payload?: { label: string; amount: number; share: number };
+}) {
+  if (!payload) {
+    return null;
+  }
+
+  const radius = outerRadius + 10;
+  const x = cx + radius * Math.cos(-midAngle * RADIAN);
+  const y = cy + radius * Math.sin(-midAngle * RADIAN);
+  const textAnchor = x > cx ? 'start' : 'end';
+
+  return (
+    <text x={x} y={y} fill="#e2e8f0" textAnchor={textAnchor} dominantBaseline="central" fontSize={10}>
+      <tspan x={x}>{payload.label}</tspan>
+      <tspan x={x} dy="1.1em" fill="#bae6fd">
+        {payload.share}% · {shortK(payload.amount)}
+      </tspan>
+    </text>
+  );
 }
 
 function renderStrongText(text: string) {
@@ -56,7 +100,7 @@ export function Demo() {
                 <Image src="/images/dashboard-1.webp" alt="Превью отчёта по прибыли" fill className="object-cover opacity-70" />
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent" />
                 <div className="relative z-10 p-4">
-                  <p className="text-xs uppercase tracking-wide text-cyan-100">Коротко по магазину за 30 дней</p>
+                  <p className="text-sm font-semibold text-cyan-100 sm:text-base">Коротко по магазину за 30 дней</p>
                 </div>
               </div>
 
@@ -66,7 +110,7 @@ export function Demo() {
                   <SummaryCard title="Чистая прибыль" value="418 тыс ₽" />
                   <SummaryCard title="Маржа после рекламы" value="16,9%" />
                   <SummaryCard
-                    title="Денег теряется из-за расходов"
+                    title="Потери из-за расходов"
                     value="264 тыс ₽"
                     note="Доставка, услуги, корректировки и прочие списания, которые съедают маржу."
                   />
@@ -128,7 +172,7 @@ export function Demo() {
                 <Image src="/images/dashboard-2.webp" alt="Превью отчёта по потерям" fill className="object-cover opacity-70" />
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/60 to-transparent" />
                 <div className="relative z-10 p-4">
-                  <p className="text-xs uppercase tracking-wide text-cyan-100">Куда уходят деньги (потери за 30 дней)</p>
+                  <p className="text-sm font-semibold text-cyan-100 sm:text-base">Куда уходят деньги (потери за 30 дней)</p>
                 </div>
               </div>
 
@@ -176,31 +220,45 @@ export function Demo() {
           className="mt-5"
         >
           <Card className="overflow-hidden border-white/20 bg-slate-950/80">
-            <div className="relative h-28 overflow-hidden border-b border-white/15">
-              <Image
-                src="/images/telegram-alerts.webp"
-                alt="Telegram-алерты по прибыли и расходам"
-                fill
-                className="object-cover opacity-70"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/55 to-transparent" />
-              <div className="relative z-10 p-4">
-                <p className="text-xs uppercase tracking-wide text-cyan-100">Уведомления и контроль через Telegram-бота</p>
-              </div>
+            <div className="border-b border-white/15 p-4 sm:p-5">
+              <p className="text-sm font-semibold text-cyan-100 sm:text-base">Алерты, которые получает владелец магазина</p>
             </div>
-            <CardContent className="grid gap-3 p-4 sm:grid-cols-3">
-              <InfoCard
-                title="Реклама в минус"
-                text="7 товаров уходят в минус после рекламы. Потери: −142 000 ₽ за 30 дней, бот присылает алерт в тот же день."
-              />
-              <InfoCard
-                title="Рост расходов"
-                text="Логистика выросла на +23% за неделю: +86 400 ₽ лишних расходов. Бот предупреждает и показывает, где рост начался."
-              />
-              <InfoCard
-                title="Неразнесённые списания"
-                text="Есть удержания на −57 300 ₽, часть приходит общей строкой. Бот присылает список операций, которые нужно проверить первыми."
-              />
+            <CardContent className="p-4 sm:p-5">
+                <div className="rounded-2xl border border-white/15 bg-[#0f172a] p-3 sm:p-4">
+                <div className="rounded-xl border border-white/10 bg-[#111b2e] p-3">
+                  <div className="mt-3 space-y-2.5 text-sm">
+                    <ChatMessage
+                      time="10:42"
+                      title="Реклама в минус"
+                      lines={[
+                        'Товар: Чехол силиконовый',
+                        'Расход за 7 дней: 12 400 ₽',
+                        'Прибыль после рекламы: 9 800 ₽',
+                        'Что сделать: отключить 2 убыточных запроса'
+                      ]}
+                    />
+                    <ChatMessage
+                      time="11:18"
+                      title="Доставка съедает маржу"
+                      lines={[
+                        'Товар: Сумка-органайзер',
+                        'Доля доставки выросла с 16% до 28%',
+                        'Что сделать: сверить размеры и упаковку'
+                      ]}
+                    />
+                    <ChatMessage
+                      time="13:05"
+                      title="Товар скоро закончится"
+                      lines={[
+                        'Товар: Сумка-органайзер',
+                        'Остатка на 6 дней',
+                        'Риск: потеря продаж и позиции',
+                        'Что сделать: довезти запас на 14–21 день'
+                      ]}
+                    />
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </motion.div>
@@ -240,22 +298,38 @@ export function Demo() {
 
           <Card className="border-white/20 bg-slate-950/80">
             <CardHeader>
-              <CardTitle className="text-base text-slate-50">Доли расходов</CardTitle>
+              <CardTitle className="text-base text-slate-50">Куда уходят деньги за 30 дней</CardTitle>
             </CardHeader>
-            <CardContent className="h-56">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Tooltip
-                    contentStyle={{ background: '#0f172a', border: '1px solid rgba(148,163,184,0.4)' }}
-                    formatter={(value: number) => `${value}%`}
-                  />
-                  <Pie data={costShare} dataKey="value" nameKey="name" innerRadius={52} outerRadius={78} paddingAngle={3}>
-                    {costShare.map((entry, index) => (
-                      <Cell key={entry.name} fill={PIE_COLORS[index % PIE_COLORS.length]} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
+            <CardContent className="h-56 overflow-hidden">
+              <div className="h-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Tooltip
+                      contentStyle={{ background: '#0f172a', border: '1px solid rgba(148,163,184,0.4)' }}
+                      formatter={(value: number, _: string, item) => {
+                        const amount = typeof item?.payload?.amount === 'number' ? item.payload.amount : 0;
+                        return `${value}% · ${money(-amount)}`;
+                      }}
+                    />
+                    <Pie
+                      data={leakageBreakdown}
+                      dataKey="share"
+                      nameKey="name"
+                      innerRadius={0}
+                      outerRadius={66}
+                      cx="50%"
+                      cy="50%"
+                      label={renderLeakageLabel}
+                      labelLine={false}
+                      paddingAngle={3}
+                    >
+                      {leakageBreakdown.map((entry, index) => (
+                        <Cell key={entry.name} fill={PIE_COLORS[index % PIE_COLORS.length]} />
+                      ))}
+                    </Pie>
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
             </CardContent>
           </Card>
 
@@ -287,7 +361,6 @@ export function Demo() {
           </Card>
         </div>
 
-        <p className="mt-5 text-sm text-slate-300">Демо-пример. В реальном проекте подключается ваш магазин и ваши товары.</p>
       </div>
     </section>
   );
@@ -313,11 +386,19 @@ function LeakCard({ title, value, note }: { title: string; value: string; note?:
   );
 }
 
-function InfoCard({ title, text }: { title: string; text: string }) {
+function ChatMessage({ title, time, lines }: { title: string; time: string; lines: string[] }) {
   return (
-    <div className="rounded-xl border border-white/15 bg-slate-900/80 p-3">
-      <p className="text-sm font-semibold text-white">{title}</p>
-      <p className="mt-1 text-xs leading-relaxed text-slate-300">{text}</p>
+    <div className="max-w-[95%] rounded-2xl rounded-tl-md border border-cyan-300/20 bg-cyan-500/10 px-3 py-2.5 text-slate-100">
+      <div className="flex items-center justify-between gap-2">
+        <p className="text-xs font-semibold text-cyan-100">Profit Control Bot</p>
+        <p className="text-[11px] text-slate-300">{time}</p>
+      </div>
+      <p className="mt-1 text-xs font-semibold text-slate-100">{title}</p>
+      <div className="mt-1 space-y-0.5 text-xs leading-relaxed text-slate-200">
+        {lines.map((line) => (
+          <p key={line}>{line}</p>
+        ))}
+      </div>
     </div>
   );
 }

@@ -45,6 +45,7 @@ def normalize_transactions(
             rows_tx.append(
                 {
                     "operation_id": operation_id,
+                    "marketplace": "ozon",
                     "operation_date": operation_date,
                     "operation_type": operation_type,
                     "operation_type_name": operation_type_name,
@@ -74,6 +75,7 @@ def normalize_transactions(
                 rows_services.append(
                     {
                         "operation_id": operation_id,
+                        "marketplace": "ozon",
                         "service_name": service_name,
                         "service_price": service_price,
                         "raw_updated_at": now,
@@ -89,6 +91,7 @@ def normalize_transactions(
                 rows_items.append(
                     {
                         "operation_id": operation_id,
+                        "marketplace": "ozon",
                         "sku": sku,
                         "item_name": _as_str(_pick(item, "name", "item_name", "itemName", "title")),
                         "raw_updated_at": now,

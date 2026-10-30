@@ -1,208 +1,252 @@
 -- mart_pnl_daily_by_product
--- 1 строка = 1 день × 1 товар (offer_id)
--- v1: транзакции разносятся по posting_number (без даты) пропорционально revenue_gross
--- защита от пробелов/мусора в ключах: posting_number нормализуется через TRIM()
+-- 1 строка = 1 день × 1 товар × marketplace
+-- Собирается из unified attribution слоя fact_product_money_attribution
 
 DROP TABLE IF EXISTS {{schema}}.mart_pnl_daily_by_product;
 
-WITH base_items AS (
+WITH bridge_best AS (
   SELECT
-    TRIM(p.posting_number) AS posting_number,
-    (p.created_at)::date AS date,
-    COALESCE(NULLIF(i.offer_id,'~'), dp.offer_id, '~') AS offer_id,
-    COALESCE(NULLIF(i.sku,'~'), dp.sku, '~') AS sku,
-    COALESCE(dp.product_name, NULLIF(i.offer_id,'~'), NULLIF(i.sku,'~'), '~') AS product_name,
-    SUM(i.quantity) AS units_sold,
-    SUM(COALESCE(i.item_price, 0) * i.quantity) AS revenue_gross
-  FROM {{schema}}.stg_posting p
-  JOIN {{schema}}.stg_posting_item i
-    ON TRIM(i.posting_number) = TRIM(p.posting_number)
-  LEFT JOIN {{schema}}.dim_product dp
-    ON (dp.sku IS NOT NULL AND dp.sku = NULLIF(i.sku,'~'))
-    OR (dp.offer_id IS NOT NULL AND dp.offer_id = NULLIF(i.offer_id,'~'))
-  GROUP BY 1,2,3,4,5
+    b.marketplace,
+    b.canonical_product_key,
+    b.offer_id,
+    b.sku,
+    b.barcode,
+    b.product_name,
+    ROW_NUMBER() OVER (
+      PARTITION BY b.marketplace, b.canonical_product_key
+      ORDER BY
+        CASE b.match_confidence WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
+        b.updated_at DESC,
+        b.bridge_id DESC
+    ) AS rn
+  FROM {{schema}}.dim_product_bridge b
 ),
-posting_totals AS (
+bridge_info AS (
   SELECT
-    posting_number,
+    marketplace,
+    canonical_product_key,
+    COALESCE(NULLIF(offer_id, ''), '~') AS offer_id,
+    COALESCE(NULLIF(sku, ''), NULLIF(barcode, ''), '~') AS sku,
+    COALESCE(NULLIF(product_name, ''), '~') AS product_name
+  FROM bridge_best
+  WHERE rn = 1
+),
+units_wb AS (
+  SELECT
+    (s.sale_date)::date AS date,
+    'wb'::text AS marketplace,
+    COALESCE(bm.canonical_product_key, '~') AS canonical_product_key,
+    SUM(
+      CASE
+        WHEN COALESCE(s.is_return, FALSE) THEN -ABS(COALESCE(s.quantity, 0))
+        ELSE COALESCE(s.quantity, 0)
+      END
+    )::numeric(18,2) AS units_sold
+  FROM {{schema}}.stg_wb_sale s
+  LEFT JOIN LATERAL (
+    SELECT b.canonical_product_key
+    FROM {{schema}}.dim_product_bridge b
+    WHERE b.marketplace = 'wb'
+      AND (
+        (NULLIF(s.offer_id, '~') IS NOT NULL AND b.offer_id = s.offer_id)
+        OR (NULLIF(s.nm_id, '') IS NOT NULL AND b.nm_id = s.nm_id)
+        OR (NULLIF(s.barcode, '') IS NOT NULL AND b.barcode = s.barcode)
+      )
+    ORDER BY
+      CASE
+        WHEN NULLIF(s.offer_id, '~') IS NOT NULL AND b.offer_id = s.offer_id THEN 1
+        WHEN NULLIF(s.nm_id, '') IS NOT NULL AND b.nm_id = s.nm_id THEN 2
+        WHEN NULLIF(s.barcode, '') IS NOT NULL AND b.barcode = s.barcode THEN 3
+        ELSE 4
+      END,
+      CASE b.match_confidence WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
+      b.updated_at DESC,
+      b.bridge_id DESC
+    LIMIT 1
+  ) bm ON TRUE
+  WHERE COALESCE(s.marketplace, 'wb') = 'wb'
+  GROUP BY 1,2,3
+),
+units_ozon AS (
+  SELECT
+    (p.created_at)::date AS date,
+    'ozon'::text AS marketplace,
+    COALESCE(bm.canonical_product_key, '~') AS canonical_product_key,
+    SUM(COALESCE(i.quantity, 0))::numeric(18,2) AS units_sold
+  FROM {{schema}}.stg_posting_item i
+  JOIN {{schema}}.stg_posting p
+    ON TRIM(p.posting_number) = TRIM(i.posting_number)
+   AND COALESCE(p.marketplace, 'ozon') = COALESCE(i.marketplace, 'ozon')
+  LEFT JOIN LATERAL (
+    SELECT b.canonical_product_key
+    FROM {{schema}}.dim_product_bridge b
+    WHERE b.marketplace = 'ozon'
+      AND (
+        (NULLIF(i.offer_id, '~') IS NOT NULL AND b.offer_id = i.offer_id)
+        OR (NULLIF(i.product_id, '~') IS NOT NULL AND b.product_id = i.product_id)
+        OR (NULLIF(i.sku, '~') IS NOT NULL AND b.sku = i.sku)
+      )
+    ORDER BY
+      CASE
+        WHEN NULLIF(i.offer_id, '~') IS NOT NULL AND b.offer_id = i.offer_id THEN 1
+        WHEN NULLIF(i.product_id, '~') IS NOT NULL AND b.product_id = i.product_id THEN 2
+        WHEN NULLIF(i.sku, '~') IS NOT NULL AND b.sku = i.sku THEN 3
+        ELSE 4
+      END,
+      CASE b.match_confidence WHEN 'high' THEN 1 WHEN 'medium' THEN 2 ELSE 3 END,
+      b.updated_at DESC,
+      b.bridge_id DESC
+    LIMIT 1
+  ) bm ON TRUE
+  WHERE COALESCE(i.marketplace, 'ozon') = 'ozon'
+  GROUP BY 1,2,3
+),
+units_daily AS (
+  SELECT
     date,
-    SUM(revenue_gross) AS posting_revenue_gross
-  FROM base_items
-  GROUP BY 1,2
+    marketplace,
+    canonical_product_key,
+    SUM(units_sold)::numeric(18,2) AS units_sold
+  FROM (
+    SELECT * FROM units_wb
+    UNION ALL
+    SELECT * FROM units_ozon
+  ) x
+  GROUP BY 1,2,3
 ),
-fin_by_posting_offer AS (
+money_daily AS (
   SELECT
-    TRIM(p.posting_number) AS posting_number,
-    (p.created_at)::date AS date,
-    dp.offer_id AS offer_id,
-    dp.sku AS sku,
-    SUM(COALESCE(f.payout,0)) AS payout,
-    SUM(COALESCE(f.commission_amount,0)) AS commission_amount,
-    SUM(COALESCE(f.item_services_total,0)) AS services_from_posting_fin,
-    SUM(COALESCE(f.total_discount_value,0)) AS discount_total
-  FROM {{schema}}.stg_posting p
-  JOIN {{schema}}.stg_posting_item_financial f
-    ON TRIM(f.posting_number) = TRIM(p.posting_number)
-  LEFT JOIN {{schema}}.dim_product dp
-    ON (dp.product_id IS NOT NULL AND dp.product_id = f.product_id)
-    OR (dp.sku IS NOT NULL AND dp.sku = f.sku)
-  GROUP BY 1,2,3,4
+    m.event_date AS date,
+    m.marketplace,
+    m.canonical_product_key,
+    SUM(CASE WHEN m.money_bucket = 'revenue' THEN m.amount ELSE 0 END)::numeric(18,2) AS revenue_gross,
+    SUM(CASE WHEN m.money_bucket = 'returns' THEN m.amount ELSE 0 END)::numeric(18,2) AS returns_amount,
+    SUM(CASE WHEN m.money_bucket = 'commission' THEN m.amount ELSE 0 END)::numeric(18,2) AS commission_amount,
+    SUM(CASE WHEN m.money_bucket = 'logistics' THEN m.amount ELSE 0 END)::numeric(18,2) AS logistics_amount,
+    SUM(CASE WHEN m.money_bucket = 'storage' THEN m.amount ELSE 0 END)::numeric(18,2) AS storage_amount,
+    SUM(CASE WHEN m.money_bucket = 'payment_processing' THEN m.amount ELSE 0 END)::numeric(18,2) AS payment_processing_amount,
+    SUM(CASE WHEN m.money_bucket = 'penalties' THEN m.amount ELSE 0 END)::numeric(18,2) AS penalties_amount,
+    SUM(CASE WHEN m.money_bucket = 'services' THEN m.amount ELSE 0 END)::numeric(18,2) AS services_amount,
+    SUM(CASE WHEN m.money_bucket = 'other' THEN m.amount ELSE 0 END)::numeric(18,2) AS other_amount,
+    SUM(CASE WHEN m.money_bucket = 'ads' THEN m.amount ELSE 0 END)::numeric(18,2) AS ads_spend,
+    SUM(CASE WHEN m.money_bucket = 'cogs' THEN m.amount ELSE 0 END)::numeric(18,2) AS cogs_amount
+  FROM {{schema}}.fact_product_money_attribution m
+  GROUP BY 1,2,3
 ),
-
--- ===== TRANSACTIONS (по posting_number, без даты) =====
-tx_logistics_by_posting AS (
-  SELECT
-    TRIM(t.posting_number) AS posting_number,
-    SUM(COALESCE(t.delivery_charge,0) + COALESCE(t.return_delivery_charge,0)) AS logistics_amount
-  FROM {{schema}}.stg_transaction t
-  WHERE t.posting_number IS NOT NULL AND TRIM(t.posting_number) <> ''
-  GROUP BY 1
-),
-tx_services_by_posting AS (
-  SELECT
-    TRIM(t.posting_number) AS posting_number,
-    SUM(COALESCE(s.service_price,0)) AS services_amount
-  FROM {{schema}}.stg_transaction t
-  JOIN {{schema}}.stg_transaction_service s
-    ON s.operation_id = t.operation_id
-  WHERE t.posting_number IS NOT NULL AND TRIM(t.posting_number) <> ''
-  GROUP BY 1
-),
-tx_by_posting AS (
-  SELECT
-    COALESCE(l.posting_number, sv.posting_number) AS posting_number,
-    COALESCE(l.logistics_amount,0) AS logistics_amount,
-    COALESCE(sv.services_amount,0) AS services_amount
-  FROM tx_logistics_by_posting l
-  FULL JOIN tx_services_by_posting sv
-    ON sv.posting_number = l.posting_number
-),
-
-ads_daily AS (
-  SELECT
-    a.date,
-    COALESCE(NULLIF(a.offer_id,'~'), dp.offer_id, '~') AS offer_id,
-    SUM(a.spend) AS ads_spend
-  FROM {{schema}}.fact_ads_spend a
-  LEFT JOIN {{schema}}.dim_product dp
-    ON (dp.sku IS NOT NULL AND dp.sku = NULLIF(a.sku,'~'))
-  GROUP BY 1,2
-),
-cogs_daily AS (
-  SELECT
-    b.date,
-    b.offer_id,
-    SUM(b.units_sold * (c.unit_cogs
-        + COALESCE(c.packaging_cost,0)
-        + COALESCE(c.inbound_shipping_cost,0)
-        + COALESCE(c.other_variable_cost,0)
-    )) AS cogs_amount
-  FROM base_items b
-  LEFT JOIN {{schema}}.fact_cogs c
-    ON c.offer_id = b.offer_id
-  GROUP BY 1,2
-),
-tx_allocated AS (
-  SELECT
-    b.date,
-    b.posting_number,
-    b.offer_id,
-    CASE
-      WHEN pt.posting_revenue_gross > 0
-        THEN (b.revenue_gross / pt.posting_revenue_gross) * COALESCE(tx.logistics_amount,0)
-      ELSE 0
-    END AS logistics_amount_alloc,
-    CASE
-      WHEN pt.posting_revenue_gross > 0
-        THEN (b.revenue_gross / pt.posting_revenue_gross) * COALESCE(tx.services_amount,0)
-      ELSE 0
-    END AS services_amount_alloc
-  FROM base_items b
-  JOIN posting_totals pt
-    ON pt.posting_number = b.posting_number AND pt.date = b.date
-  LEFT JOIN tx_by_posting tx
-    ON tx.posting_number = b.posting_number
+keys AS (
+  SELECT date, marketplace, canonical_product_key FROM units_daily
+  UNION
+  SELECT date, marketplace, canonical_product_key FROM money_daily
 )
-
 SELECT
-  b.date,
-  b.offer_id,
-  b.sku,
-  b.product_name,
-  b.units_sold,
-  b.revenue_gross,
-
-  COALESCE(f.payout,0) AS payout,
-  COALESCE(f.commission_amount,0) AS commission_amount,
-
-  COALESCE(tx.logistics_amount_alloc,0) AS logistics_amount,
-  (COALESCE(tx.services_amount_alloc,0) + COALESCE(f.services_from_posting_fin,0)) AS services_amount,
-
-  CAST(0 AS NUMERIC(18,2)) AS returns_amount,
-
-  COALESCE(cg.cogs_amount,0) AS cogs_amount,
-  COALESCE(a.ads_spend,0) AS ads_spend,
-
-  (COALESCE(f.payout,0)
-   - COALESCE(cg.cogs_amount,0)
-   - COALESCE(tx.logistics_amount_alloc,0)
-   - COALESCE(tx.services_amount_alloc,0)
-   - COALESCE(f.services_from_posting_fin,0)
-  ) AS profit_before_ads,
-
-  (COALESCE(f.payout,0)
-   - COALESCE(cg.cogs_amount,0)
-   - COALESCE(tx.logistics_amount_alloc,0)
-   - COALESCE(tx.services_amount_alloc,0)
-   - COALESCE(f.services_from_posting_fin,0)
-   - COALESCE(a.ads_spend,0)
-  ) AS profit_after_ads,
-
+  k.date,
+  k.marketplace,
+  COALESCE(b.offer_id, '~') AS offer_id,
+  COALESCE(b.sku, '~') AS sku,
+  COALESCE(b.product_name, '~') AS product_name,
+  COALESCE(u.units_sold, 0)::numeric(18,2) AS units_sold,
+  COALESCE(m.revenue_gross, 0)::numeric(18,2) AS revenue_gross,
+  (
+    COALESCE(m.revenue_gross, 0)
+    - COALESCE(m.returns_amount, 0)
+    - COALESCE(m.commission_amount, 0)
+    - COALESCE(m.logistics_amount, 0)
+    - COALESCE(m.storage_amount, 0)
+    - COALESCE(m.payment_processing_amount, 0)
+    - COALESCE(m.penalties_amount, 0)
+    - COALESCE(m.services_amount, 0)
+    - COALESCE(m.other_amount, 0)
+  )::numeric(18,2) AS payout,
+  COALESCE(m.commission_amount, 0)::numeric(18,2) AS commission_amount,
+  COALESCE(m.logistics_amount, 0)::numeric(18,2) AS logistics_amount,
+  COALESCE(m.services_amount, 0)::numeric(18,2) AS services_amount,
+  COALESCE(m.storage_amount, 0)::numeric(18,2) AS storage_amount,
+  COALESCE(m.payment_processing_amount, 0)::numeric(18,2) AS payment_processing_amount,
+  COALESCE(m.penalties_amount, 0)::numeric(18,2) AS penalties_amount,
+  COALESCE(m.other_amount, 0)::numeric(18,2) AS other_amount,
+  (
+    COALESCE(m.services_amount, 0)
+    + COALESCE(m.storage_amount, 0)
+    + COALESCE(m.payment_processing_amount, 0)
+    + COALESCE(m.penalties_amount, 0)
+    + COALESCE(m.other_amount, 0)
+  )::numeric(18,2) AS marketplace_other_fees_amount,
+  COALESCE(m.returns_amount, 0)::numeric(18,2) AS returns_amount,
+  COALESCE(m.cogs_amount, 0)::numeric(18,2) AS cogs_amount,
+  COALESCE(m.ads_spend, 0)::numeric(18,2) AS ads_spend,
+  (
+    COALESCE(m.revenue_gross, 0)
+    - COALESCE(m.returns_amount, 0)
+    - COALESCE(m.commission_amount, 0)
+    - COALESCE(m.logistics_amount, 0)
+    - COALESCE(m.storage_amount, 0)
+    - COALESCE(m.payment_processing_amount, 0)
+    - COALESCE(m.penalties_amount, 0)
+    - COALESCE(m.services_amount, 0)
+    - COALESCE(m.other_amount, 0)
+  )::numeric(18,2) AS profit_before_ads,
+  (
+    COALESCE(m.revenue_gross, 0)
+    - COALESCE(m.returns_amount, 0)
+    - COALESCE(m.commission_amount, 0)
+    - COALESCE(m.logistics_amount, 0)
+    - COALESCE(m.storage_amount, 0)
+    - COALESCE(m.payment_processing_amount, 0)
+    - COALESCE(m.penalties_amount, 0)
+    - COALESCE(m.services_amount, 0)
+    - COALESCE(m.other_amount, 0)
+    - COALESCE(m.ads_spend, 0)
+  )::numeric(18,2) AS profit_after_ads,
   CASE
-    WHEN b.revenue_gross > 0
-      THEN (COALESCE(f.payout,0)
-            - COALESCE(cg.cogs_amount,0)
-            - COALESCE(tx.logistics_amount_alloc,0)
-            - COALESCE(tx.services_amount_alloc,0)
-            - COALESCE(f.services_from_posting_fin,0)
-            - COALESCE(a.ads_spend,0)
-           ) / b.revenue_gross
+    WHEN COALESCE(m.revenue_gross, 0) > 0 THEN (
+      COALESCE(m.revenue_gross, 0)
+      - COALESCE(m.returns_amount, 0)
+      - COALESCE(m.commission_amount, 0)
+      - COALESCE(m.logistics_amount, 0)
+      - COALESCE(m.storage_amount, 0)
+      - COALESCE(m.payment_processing_amount, 0)
+      - COALESCE(m.penalties_amount, 0)
+      - COALESCE(m.services_amount, 0)
+      - COALESCE(m.other_amount, 0)
+      - COALESCE(m.ads_spend, 0)
+    ) / m.revenue_gross
     ELSE NULL
   END AS margin_after_ads,
-
   CASE
-    WHEN b.units_sold > 0
-      THEN (COALESCE(f.payout,0)
-            - COALESCE(cg.cogs_amount,0)
-            - COALESCE(tx.logistics_amount_alloc,0)
-            - COALESCE(tx.services_amount_alloc,0)
-            - COALESCE(f.services_from_posting_fin,0)
-            - COALESCE(a.ads_spend,0)
-           ) / b.units_sold
+    WHEN COALESCE(u.units_sold, 0) <> 0 THEN (
+      COALESCE(m.revenue_gross, 0)
+      - COALESCE(m.returns_amount, 0)
+      - COALESCE(m.commission_amount, 0)
+      - COALESCE(m.logistics_amount, 0)
+      - COALESCE(m.storage_amount, 0)
+      - COALESCE(m.payment_processing_amount, 0)
+      - COALESCE(m.penalties_amount, 0)
+      - COALESCE(m.services_amount, 0)
+      - COALESCE(m.other_amount, 0)
+      - COALESCE(m.ads_spend, 0)
+    ) / u.units_sold
     ELSE NULL
   END AS profit_per_unit_after_ads,
-
-  COALESCE(f.discount_total,0) AS discount_total
-
+  0::numeric(18,2) AS discount_total
 INTO {{schema}}.mart_pnl_daily_by_product
-FROM base_items b
-LEFT JOIN fin_by_posting_offer f
-  ON f.posting_number = b.posting_number
- AND f.date = b.date
- AND f.offer_id = b.offer_id
-LEFT JOIN tx_allocated tx
-  ON tx.posting_number = b.posting_number
- AND tx.date = b.date
- AND tx.offer_id = b.offer_id
-LEFT JOIN cogs_daily cg
-  ON cg.date = b.date
- AND cg.offer_id = b.offer_id
-LEFT JOIN ads_daily a
-  ON a.date = b.date
- AND a.offer_id = b.offer_id;
+FROM keys k
+LEFT JOIN units_daily u
+  ON u.date = k.date
+ AND u.marketplace = k.marketplace
+ AND u.canonical_product_key = k.canonical_product_key
+LEFT JOIN money_daily m
+  ON m.date = k.date
+ AND m.marketplace = k.marketplace
+ AND m.canonical_product_key = k.canonical_product_key
+LEFT JOIN bridge_info b
+  ON b.marketplace = k.marketplace
+ AND b.canonical_product_key = k.canonical_product_key;
 
 CREATE INDEX mart_pnl_daily_by_product_date_idx
   ON {{schema}}.mart_pnl_daily_by_product (date);
 
 CREATE INDEX mart_pnl_daily_by_product_offer_idx
-  ON {{schema}}.mart_pnl_daily_by_product (offer_id);
+  ON {{schema}}.mart_pnl_daily_by_product (marketplace, offer_id);
+
+CREATE INDEX mart_pnl_daily_by_product_marketplace_idx
+  ON {{schema}}.mart_pnl_daily_by_product (marketplace);

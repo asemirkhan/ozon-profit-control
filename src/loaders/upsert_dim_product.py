@@ -20,11 +20,14 @@ def upsert_dim_product(schema: str, rows: list[dict[str, Any]]) -> None:
     if not rows:
         logger.info("No rows to upsert into %s.dim_product", schema)
         return
+    for row in rows:
+        row.setdefault("marketplace", "ozon")
 
     query = sql.SQL(
         """
         INSERT INTO {schema}.dim_product (
             offer_id,
+            marketplace,
             product_id,
             sku,
             product_name,
@@ -36,6 +39,7 @@ def upsert_dim_product(schema: str, rows: list[dict[str, Any]]) -> None:
         )
         VALUES (
             %(offer_id)s,
+            %(marketplace)s,
             %(product_id)s,
             %(sku)s,
             %(product_name)s,
@@ -47,6 +51,7 @@ def upsert_dim_product(schema: str, rows: list[dict[str, Any]]) -> None:
         )
         ON CONFLICT (offer_id) DO UPDATE
         SET
+            marketplace = EXCLUDED.marketplace,
             product_id = EXCLUDED.product_id,
             sku = EXCLUDED.sku,
             product_name = EXCLUDED.product_name,

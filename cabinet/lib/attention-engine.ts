@@ -291,7 +291,7 @@ export function buildStoreAttentionState(
       key: 'ads-cpo-growth',
       title: 'Есть товары, где выросла стоимость заказа за последние 7 дней',
       countLabel: formatProductCount(adsSignals.length),
-      href: '/cabinet/products?mode=attention&type=ads&reason=cpo_growth',
+      href: '/products?mode=attention&type=ads&reason=cpo_growth',
       linkLabel: 'посмотреть товары',
     });
   }
@@ -303,7 +303,7 @@ export function buildStoreAttentionState(
         adsSnapshotSummary?.top3_spend_share !== null && adsSnapshotSummary?.top3_spend_share !== undefined
           ? `Топ-3 товара дают ${Math.round(adsSnapshotSummary.top3_spend_share)}% рекламных расходов`
           : undefined,
-      href: '/cabinet/products?mode=attention&type=ads&reason=budget_concentration',
+      href: '/products?mode=attention&type=ads&reason=budget_concentration',
       linkLabel: 'посмотреть товары',
       linkMode: 'inline',
     });
@@ -331,7 +331,7 @@ export function buildStoreAttentionState(
             key: 'logistics-growth',
             title: 'Есть товары, где выросла логистика на заказ за последние 7 дней',
             countLabel: formatProductCount(logisticsSignals.length),
-            href: '/cabinet/products?mode=attention&type=logistics&reason=logistics_growth',
+            href: '/products?mode=attention&type=logistics&reason=logistics_growth',
             linkLabel: 'посмотреть товары',
           },
         ]
@@ -354,7 +354,7 @@ export function buildStoreAttentionState(
               key: 'commission-growth',
               title: 'Есть товары, где выросла комиссия на заказ за последние 7 дней',
               countLabel: formatProductCount(commissionSignals.length),
-              href: '/cabinet/products?mode=attention&type=commission&reason=commission_growth',
+              href: '/products?mode=attention&type=commission&reason=commission_growth',
               linkLabel: 'посмотреть товары',
             },
           ]

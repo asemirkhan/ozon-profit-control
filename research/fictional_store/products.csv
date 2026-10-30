@@ -1,0 +1,41 @@
+product_id,vendor_code,name,group,scenario_code
+LH-001,LUN-BED-001,"Сатин Облако, 1,5-спальное",Постельное бельё,P01_HEALTHY_SCALE
+LH-002,LUN-BED-002,"Перкаль Север, 2-спальное",Постельное бельё,P02_SCALE_LOGISTICS_PRESSURE
+LH-003,LUN-BED-003,"Страйп Лаванда, Евро",Постельное бельё,P03_AD_GROWTH_JUSTIFIED
+LH-004,LUN-BED-004,"Поплин Мята, 1,5-спальное",Постельное бельё,P04_REVENUE_UP_AD_RESULT_DOWN
+LH-005,LUN-BED-005,"Сатин Графит, 2-спальное",Постельное бельё,P05_REVENUE_UP_LOGISTICS_RESULT_DOWN
+LH-006,LUN-BED-006,"Перкаль Песок, Евро",Постельное бельё,P06_PRICE_DOWN_RESULT_DOWN
+LH-007,LUN-SHEET-007,"Молочный сатин, 90×200 см",Простыни на резинке,P07_STOCKOUT
+LH-008,LUN-SHEET-008,"Серый перкаль, 140×200 см",Простыни на резинке,P08_SEARCH_VISIBILITY_DOWN
+LH-009,LUN-SHEET-009,"Оливковый поплин, 160×200 см",Простыни на резинке,P09_AD_BUDGET_EXHAUSTED
+LH-010,LUN-SHEET-010,"Лавандовый сатин, 180×200 см",Простыни на резинке,P10_AD_CTR_DOWN
+LH-011,LUN-SHEET-011,"Песочный поплин, 90×200 см",Простыни на резинке,P11_PRICE_UP_CONVERSION_DOWN
+LH-012,LUN-SHEET-012,"Белый страйп, 140×200 см",Простыни на резинке,P12_DELIVERY_TIME_DOWN
+LH-013,LUN-PILLOWCASE-013,"Сатин молочный, 50×70 см, 2 шт.",Наволочки,P13_RATING_PACKAGING
+LH-014,LUN-PILLOWCASE-014,"Перкаль серый, 70×70 см, 2 шт.",Наволочки,P14_CATEGORY_DEMAND_DOWN
+LH-015,LUN-PILLOWCASE-015,"Страйп белый, 50×70 см, 2 шт.",Наволочки,P15_COMPETITOR_GAIN
+LH-016,LUN-PILLOWCASE-016,"Поплин оливковый, 70×70 см, 2 шт.",Наволочки,P16_UNITS_PER_ORDER_DOWN
+LH-017,LUN-PILLOWCASE-017,"Сатин пудровый, 50×70 см, 2 шт.",Наволочки,P17_PRICE_DOWN_NO_VOLUME
+LH-018,LUN-PILLOWCASE-018,"Перкаль голубой, 70×70 см, 2 шт.",Наволочки,P18_PRICE_UP_VOLUME_DOWN_UNPROVEN
+LH-019,LUN-TOWEL-019,"Отель белое, 50×90 см",Полотенца,P19_AD_COST_PER_ORDER_UP
+LH-020,LUN-TOWEL-020,"Графит банное, 70×140 см",Полотенца,P20_ADS_ATTRIBUTION_MISSING
+LH-021,LUN-TOWEL-021,"Песок банное, 50×90 см",Полотенца,P21_LOGISTICS_WAREHOUSE
+LH-022,LUN-TOWEL-022,"Оливковое банное, 70×140 см",Полотенца,P22_LOGISTICS_RETURNS
+LH-023,LUN-TOWEL-023,"Молочное лицевое, 50×90 см",Полотенца,P23_LOGISTICS_SHARE_PRICE_EFFECT
+LH-024,LUN-TOWEL-024,"Серое лицевое, 70×140 см",Полотенца,P24_STORAGE_EXCESS_STOCK
+LH-025,LUN-THROW-025,"Вафельный молочный, 150×200 см",Пледы,P25_STORAGE_ALLOCATED
+LH-026,LUN-THROW-026,"Вафельный графит, 200×220 см",Пледы,P26_COMMISSION_TARIFF
+LH-027,LUN-THROW-027,"Хлопковый песочный, 150×200 см",Пледы,P27_RETURNS_COLOR_MISMATCH
+LH-028,LUN-THROW-028,"Хлопковый оливковый, 200×220 см",Пледы,P28_CANCELLATIONS_DELIVERY
+LH-029,LUN-THROW-029,"Муслиновый пудровый, 150×200 см",Пледы,P29_NEGATIVE_RESULT_ADS
+LH-030,LUN-THROW-030,"Муслиновый голубой, 200×220 см",Пледы,P30_NEGATIVE_ONE_RETURN
+LH-031,LUN-COVER-031,"Стёганое молочное, 160×220 см",Покрывала,P31_RESULT_DOWN_VOLUME
+LH-032,LUN-COVER-032,"Стёганое графит, 220×240 см",Покрывала,P32_RESULT_DOWN_UNIT_COST
+LH-033,LUN-COVER-033,"Вафельное песочное, 160×220 см",Покрывала,P33_MONTH_DOWN_WEEK_RECOVERY
+LH-034,LUN-COVER-034,"Сатиновое оливковое, 220×240 см",Покрывала,P34_MONTH_UP_WEEK_DOWN
+LH-035,LUN-COVER-035,"Муслиновое пудровое, 160×220 см",Покрывала,P35_ONE_DAY_ALERT
+LH-036,LUN-COVER-036,"Хлопковое серое, 220×240 см",Покрывала,P36_ONE_DAY_INCOMPLETE
+LH-037,LUN-SLEEP-037,"Одеяло всесезонное, 140×205 см",Одеяла и подушки,P37_STOCK_3_DAYS
+LH-038,LUN-SLEEP-038,"Одеяло лёгкое, 172×205 см",Одеяла и подушки,P38_STOCK_7_DAYS
+LH-039,LUN-SLEEP-039,"Подушка 50×70, 50×70 см",Одеяла и подушки,P39_STOCK_DATA_MISSING
+LH-040,LUN-SLEEP-040,"Подушка 70×70, 70×70 см",Одеяла и подушки,P40_NEW_PRODUCT

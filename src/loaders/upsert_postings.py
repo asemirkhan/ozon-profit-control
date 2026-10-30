@@ -17,11 +17,14 @@ def upsert_stg_posting(schema: str, rows: list[dict[str, Any]]) -> int:
         raise ValueError(f"Invalid schema name: {schema}")
     if not rows:
         return 0
+    for row in rows:
+        row.setdefault("marketplace", "ozon")
 
     query = sql.SQL(
         """
         INSERT INTO {schema}.stg_posting (
             posting_number,
+            marketplace,
             status,
             created_at,
             in_process_at,
@@ -36,6 +39,7 @@ def upsert_stg_posting(schema: str, rows: list[dict[str, Any]]) -> int:
         )
         VALUES (
             %(posting_number)s,
+            %(marketplace)s,
             %(status)s,
             %(created_at)s,
             %(in_process_at)s,
@@ -50,6 +54,7 @@ def upsert_stg_posting(schema: str, rows: list[dict[str, Any]]) -> int:
         )
         ON CONFLICT (posting_number) DO UPDATE
         SET
+            marketplace = EXCLUDED.marketplace,
             status = EXCLUDED.status,
             created_at = EXCLUDED.created_at,
             in_process_at = EXCLUDED.in_process_at,
@@ -75,11 +80,14 @@ def upsert_stg_posting_item(schema: str, rows: list[dict[str, Any]]) -> int:
         raise ValueError(f"Invalid schema name: {schema}")
     if not rows:
         return 0
+    for row in rows:
+        row.setdefault("marketplace", "ozon")
 
     query = sql.SQL(
         """
         INSERT INTO {schema}.stg_posting_item (
             posting_number,
+            marketplace,
             offer_id,
             sku,
             product_id,
@@ -90,6 +98,7 @@ def upsert_stg_posting_item(schema: str, rows: list[dict[str, Any]]) -> int:
         )
         VALUES (
             %(posting_number)s,
+            %(marketplace)s,
             %(offer_id)s,
             %(sku)s,
             %(product_id)s,
@@ -100,6 +109,7 @@ def upsert_stg_posting_item(schema: str, rows: list[dict[str, Any]]) -> int:
         )
         ON CONFLICT (posting_number, offer_id, sku, product_id) DO UPDATE
         SET
+            marketplace = EXCLUDED.marketplace,
             quantity = EXCLUDED.quantity,
             item_price = EXCLUDED.item_price,
             currency = EXCLUDED.currency,
@@ -118,11 +128,14 @@ def upsert_stg_posting_item_financial(schema: str, rows: list[dict[str, Any]]) -
         raise ValueError(f"Invalid schema name: {schema}")
     if not rows:
         return 0
+    for row in rows:
+        row.setdefault("marketplace", "ozon")
 
     query = sql.SQL(
         """
         INSERT INTO {schema}.stg_posting_item_financial (
             posting_number,
+            marketplace,
             product_id,
             sku,
             quantity,
@@ -138,6 +151,7 @@ def upsert_stg_posting_item_financial(schema: str, rows: list[dict[str, Any]]) -
         )
         VALUES (
             %(posting_number)s,
+            %(marketplace)s,
             %(product_id)s,
             %(sku)s,
             %(quantity)s,
@@ -153,6 +167,7 @@ def upsert_stg_posting_item_financial(schema: str, rows: list[dict[str, Any]]) -
         )
         ON CONFLICT (posting_number, product_id) DO UPDATE
         SET
+            marketplace = EXCLUDED.marketplace,
             sku = EXCLUDED.sku,
             quantity = EXCLUDED.quantity,
             price = EXCLUDED.price,

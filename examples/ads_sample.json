@@ -1,0 +1,103 @@
+{
+  "result": {
+    "campaigns": [
+      {
+        "campaign_id": "cmp-search-1001",
+        "campaign_name": "Поиск: Базовые товары",
+        "campaign_type": "search_promo",
+        "currency": "RUB",
+        "products": [
+          {
+            "offer_id": "offer-1",
+            "sku": "sku-1",
+            "product_id": "prod-1",
+            "stats": [
+              {
+                "date": "2026-02-01",
+                "impressions": 21500,
+                "clicks": 640,
+                "orders_count": 52,
+                "revenue": "183400.00",
+                "spend": "12650.40"
+              },
+              {
+                "date": "2026-02-02",
+                "impressions": 19800,
+                "clicks": 590,
+                "orders_count": 47,
+                "revenue": "169200.00",
+                "spend": "11980.00"
+              }
+            ]
+          },
+          {
+            "offer_id": "offer-2",
+            "sku": "sku-2",
+            "product_id": "prod-2",
+            "stats": [
+              {
+                "date": "2026-02-01",
+                "impressions": 15200,
+                "clicks": 410,
+                "orders_count": 28,
+                "revenue": "94400.00",
+                "spend": "7420.00"
+              },
+              {
+                "date": "2026-02-02",
+                "impressions": 16100,
+                "clicks": 430,
+                "orders_count": 31,
+                "revenue": "101600.00",
+                "spend": "7815.00"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "campaign_id": "cmp-tg-2044",
+        "campaign_name": "Трафареты: Категория дом",
+        "campaign_type": "turbopromoted",
+        "currency": "RUB",
+        "products": [
+          {
+            "offer_id": "offer-3",
+            "sku": "sku-3",
+            "product_id": "prod-3",
+            "stats": [
+              {
+                "date": "2026-02-01",
+                "impressions": 9800,
+                "clicks": 260,
+                "orders_count": 15,
+                "revenue": "58200.00",
+                "spend": "4960.00"
+              },
+              {
+                "date": "2026-02-02",
+                "impressions": 10300,
+                "clicks": 279,
+                "orders_count": 17,
+                "revenue": "63400.00",
+                "spend": "5210.50"
+              }
+            ]
+          },
+          {
+            "stats": [
+              {
+                "date": "2026-02-02",
+                "impressions": 4200,
+                "clicks": 110,
+                "orders_count": 6,
+                "revenue": "22800.00",
+                "spend": "1780.00"
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

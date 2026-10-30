@@ -1,0 +1,45 @@
+{
+  "result": {
+    "warehouses": [
+      {
+        "warehouse_name": "Main Warehouse",
+        "warehouse_type": "fbo",
+        "items": [
+          {
+            "offer_id": "offer-1",
+            "sku": "sku-1",
+            "product_id": "prod-1",
+            "stock_total": "25",
+            "stock_available": "20",
+            "stock_reserved": "4",
+            "stock_defect": "1",
+            "updated_at": "2026-03-08T09:15:00Z"
+          }
+        ]
+      },
+      {
+        "warehouse_name": "Reserve Warehouse",
+        "warehouse_type": "fbo",
+        "items": [
+          {
+            "offer_id": "offer-1",
+            "sku": "sku-1",
+            "product_id": "prod-1",
+            "stock_total": "10",
+            "stock_available": "8",
+            "stock_reserved": "2",
+            "stock_defect": "0",
+            "updated_at": "2026-03-08T09:15:00Z"
+          },
+          {
+            "sku": "sku-2",
+            "stock_total": "-2",
+            "stock_reserved": "0",
+            "stock_defect": "0",
+            "updated_at": "2026-03-08T09:15:00Z"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -4,18 +4,17 @@ import { PageHeader } from '@/components/cabinet/PageHeader';
 import { getInternalDataHealth } from '@/lib/api';
 import { formatCount, formatMoney, normalizeUiText } from '@/lib/format';
 
-type TabKey = 'ingestion' | 'completeness' | 'attribution' | 'costs' | 'snapshots';
+type TabKey = 'ingestion' | 'completeness' | 'attribution' | 'snapshots';
 
 const tabs: Array<{ key: TabKey; label: string }> = [
   { key: 'ingestion', label: 'Ingestion' },
   { key: 'completeness', label: 'Completeness' },
   { key: 'attribution', label: 'Attribution' },
-  { key: 'costs', label: 'Costs' },
   { key: 'snapshots', label: 'Published snapshots' },
 ];
 
 function resolveTab(raw?: string): TabKey {
-  if (raw === 'completeness' || raw === 'attribution' || raw === 'costs' || raw === 'snapshots') {
+  if (raw === 'completeness' || raw === 'attribution' || raw === 'snapshots') {
     return raw;
   }
   return 'ingestion';
@@ -44,7 +43,7 @@ export default async function InternalDataHealthPage({ searchParams }: Props) {
     <div>
       <PageHeader
         title="Internal Data Health"
-        subtitle="Внутренний контроль: ingestion, полнота, атрибуция денег, покрытие себестоимости и publish lifecycle snapshot-ов."
+        subtitle="Внутренний контроль загрузки, полноты, распределения денег и опубликованных снимков."
       />
 
       <section className="panel section">
@@ -147,29 +146,6 @@ export default async function InternalDataHealthPage({ searchParams }: Props) {
               ))}
             </tbody>
           </table>
-        </section>
-      ) : null}
-
-      {tab === 'costs' ? (
-        <section className="panel section">
-          <div className="grid gap-3 lg:grid-cols-2">
-            <article className="rounded-xl border border-white/10 bg-slate-950/25 p-4">
-              <p className="m-0 text-sm text-slate-400">SKU with manual COGS</p>
-              <p className="mt-2 text-2xl font-semibold">{formatCount(data?.costs.sku_manual_cogs || 0)}</p>
-            </article>
-            <article className="rounded-xl border border-white/10 bg-slate-950/25 p-4">
-              <p className="m-0 text-sm text-slate-400">SKU with category fallback</p>
-              <p className="mt-2 text-2xl font-semibold">{formatCount(data?.costs.sku_category_fallback || 0)}</p>
-            </article>
-            <article className="rounded-xl border border-white/10 bg-slate-950/25 p-4">
-              <p className="m-0 text-sm text-slate-400">SKU with global fallback</p>
-              <p className="mt-2 text-2xl font-semibold">{formatCount(data?.costs.sku_global_fallback || 0)}</p>
-            </article>
-            <article className="rounded-xl border border-white/10 bg-slate-950/25 p-4">
-              <p className="m-0 text-sm text-slate-400">Missing COGS coverage</p>
-              <p className="mt-2 text-2xl font-semibold">{formatCount(data?.costs.missing_cogs_coverage || 0)}</p>
-            </article>
-          </div>
         </section>
       ) : null}
 

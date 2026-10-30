@@ -75,3 +75,62 @@ class TestPostingsFbsNormalizer(TestCase):
         self.assertEqual(rows_items[0]["offer_id"], "~")
         self.assertEqual(rows_items[0]["sku"], "~")
         self.assertEqual(rows_items[0]["product_id"], "prod-x")
+
+    def test_created_at_fallback_to_in_process_at(self) -> None:
+        pages = [
+            {
+                "result": {
+                    "postings": [
+                        {
+                            "posting_number": "P-3",
+                            "in_process_at": "2026-02-03T11:00:00Z",
+                            "products": [
+                                {
+                                    "offer_id": "offer-3",
+                                    "sku": "sku-3",
+                                    "product_id": "prod-3",
+                                    "quantity": 1,
+                                }
+                            ],
+                        }
+                    ]
+                }
+            }
+        ]
+
+        rows_posting, rows_items, _rows_financial = normalize_postings_fbs(pages)
+
+        self.assertEqual(len(rows_posting), 1)
+        self.assertEqual(len(rows_items), 1)
+        self.assertEqual(rows_posting[0]["created_at"], "2026-02-03T11:00:00Z")
+        self.assertEqual(rows_posting[0]["in_process_at"], "2026-02-03T11:00:00Z")
+
+    def test_created_at_fallback_to_cancellation_cancelled_after_ship(self) -> None:
+        pages = [
+            {
+                "result": {
+                    "postings": [
+                        {
+                            "posting_number": "P-4",
+                            "cancellation": {
+                                "cancelled_after_ship": "2026-02-04T09:30:00Z",
+                            },
+                            "products": [
+                                {
+                                    "offer_id": "offer-4",
+                                    "sku": "sku-4",
+                                    "product_id": "prod-4",
+                                    "quantity": 1,
+                                }
+                            ],
+                        }
+                    ]
+                }
+            }
+        ]
+
+        rows_posting, rows_items, _rows_financial = normalize_postings_fbs(pages)
+
+        self.assertEqual(len(rows_posting), 1)
+        self.assertEqual(len(rows_items), 1)
+        self.assertEqual(rows_posting[0]["created_at"], "2026-02-04T09:30:00Z")

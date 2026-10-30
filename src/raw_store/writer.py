@@ -8,6 +8,7 @@ from typing import Any, Mapping
 
 SCHEMA_PATTERN = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*$")
 SOURCE_PATTERN = re.compile(r"^[A-Za-z0-9_][A-Za-z0-9_-]*$")
+FILE_STEM_PATTERN = re.compile(r"^[A-Za-z0-9_.-]+$")
 
 
 def _project_root() -> Path:
@@ -22,6 +23,8 @@ def write_raw_json(
     page: int,
     request_params: Mapping[str, Any] | None = None,
     http_status: int | None = None,
+    meta_extra: Mapping[str, Any] | None = None,
+    file_stem: str | None = None,
 ) -> Path:
     if not SCHEMA_PATTERN.fullmatch(schema):
         raise ValueError(f"Invalid schema name: {schema}")
@@ -34,7 +37,12 @@ def write_raw_json(
     base_dir = _project_root() / "data" / "raw" / schema / source / day
     base_dir.mkdir(parents=True, exist_ok=True)
 
-    file_path = base_dir / f"{run_id}_{page}.json"
+    if file_stem:
+        if not FILE_STEM_PATTERN.fullmatch(file_stem):
+            raise ValueError(f"Invalid file_stem: {file_stem}")
+        file_path = base_dir / f"{file_stem}.json"
+    else:
+        file_path = base_dir / f"{run_id}_{page}.json"
     file_path.write_text(
         json.dumps(payload, ensure_ascii=False, indent=2),
         encoding="utf-8",
@@ -51,6 +59,8 @@ def write_raw_json(
         meta["request_params"] = request_params
     if http_status is not None:
         meta["http_status"] = http_status
+    if meta_extra:
+        meta.update(dict(meta_extra))
 
     meta_path.write_text(json.dumps(meta, ensure_ascii=False, indent=2), encoding="utf-8")
     return file_path

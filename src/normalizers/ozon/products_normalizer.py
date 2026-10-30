@@ -61,6 +61,7 @@ def normalize_products(pages: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
             row = {
                 "offer_id": str(offer_id),
+                "marketplace": "ozon",
                 "product_id": _as_str_or_none(_pick(item, "product_id", "productId", "id")),
                 "sku": _as_str_or_none(_pick(item, "sku", "sku_id", "skuId")),
                 "product_name": _as_str_or_none(_pick(item, "name", "product_name", "title")),

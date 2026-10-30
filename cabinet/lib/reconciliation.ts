@@ -43,9 +43,9 @@ export function buildReconciliationSummary(snapshot: ProfitDashboardSnapshot): R
       row.units === undefined
   ).length;
 
-  const estimatedCogsIssues = productRows.filter((row) => {
-    const estimated = row.viruchka - row.operacionnaya_pribyl - row.wb_rashody - row.reklama;
-    return estimated < -1;
+  const formulaIssues = productRows.filter((row) => {
+    const residual = row.viruchka - row.operacionnaya_pribyl - row.wb_rashody - row.reklama;
+    return Math.abs(residual) > 1;
   }).length;
 
   const revenueSum = productRows.reduce((sum, row) => sum + row.viruchka, 0);
@@ -91,8 +91,8 @@ export function buildReconciliationSummary(snapshot: ProfitDashboardSnapshot): R
     {
       code: 'formula',
       label: 'Базовая формула',
-      status: estimatedCogsIssues > 0 ? 'WARNING' : 'OK',
-      detail: estimatedCogsIssues > 0 ? `Товаров с отрицательной оценкой себестоимости: ${estimatedCogsIssues}` : 'Выручка и расходы складываются корректно.',
+      status: formulaIssues > 0 ? 'WARNING' : 'OK',
+      detail: formulaIssues > 0 ? `Товаров с расхождением формулы: ${formulaIssues}` : 'Выручка и расходы складываются корректно.',
     },
     {
       code: 'aggregates',

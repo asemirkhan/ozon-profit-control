@@ -1,0 +1,41 @@
+scenario_code,product_id,evidence_source,dimension,previous_value,current_value,unit,contribution_rub,coverage_pct,causal_status,evidence_text
+P01_HEALTHY_SCALE,LH-001,synthetic_period_metrics,product,479194.55,598886.04,RUB,119691.49,100,proven,"Заказов и результата стало больше, удельные расходы сохранились."
+P02_SCALE_LOGISTICS_PRESSURE,LH-002,synthetic_logistics_operations_by_warehouse,Коледино → Электросталь,146.21,207.54,RUB_per_sold_unit,43659.6,74,insufficient,Склад Коледино дал 43 660 ₽ из подтверждённой прибавки логистики; медианный срок доставки из Коледино и Электростали одинаков — 2 дня.
+P03_AD_GROWTH_JUSTIFIED,LH-003,synthetic_period_metrics,product,989665.2,1283770.05,RUB,294104.85,100,proven,Рекламные заказы и результат товара выросли быстрее рекламных расходов.
+P04_REVENUE_UP_AD_RESULT_DOWN,LH-004,synthetic_campaign_daily_stats,Кампания Поиск · Основные запросы,205300.5,420866.02,RUB,215565.52,82,proven,Одна кампания дала основную прибавку расхода без сопоставимого роста заказов.
+P05_REVENUE_UP_LOGISTICS_RESULT_DOWN,LH-005,synthetic_logistics_operations_by_warehouse,Коледино → Электросталь,195.14,663.61,RUB_per_sold_unit,422934.72,74,insufficient,Склад Коледино дал 422 935 ₽ из подтверждённой прибавки логистики; медианный срок доставки из Коледино и Электростали одинаков — 2 дня.
+P06_PRICE_DOWN_RESULT_DOWN,LH-006,synthetic_price_and_card_funnel_history,Фактическая цена и доля заказов,4490.0,3681.8,RUB,725231.51,100,proven,"После увеличения скидки цена снизилась, а заказы не выросли."
+P07_STOCKOUT,LH-007,synthetic_stock_history_by_warehouse,Продающие склады,30.0,0.0,stock_days,2537207.43,98,proven,"На складах, дававших 68% заказов, товара не было 8 дней."
+P08_SEARCH_VISIBILITY_DOWN,LH-008,synthetic_search_position_history,Три основных запроса,12.0,30.0,search_rank,219659.58,88,proven,"Позиции по трём основным запросам ухудшились, органические переходы снизились."
+P09_AD_BUDGET_EXHAUSTED,LH-009,synthetic_campaign_daily_stats,Кампания Поиск · Основные запросы,66069.99,51534.59,RUB,0.0,82,proven,Кампания прекращала показы после 17:00 при стабильном расходе на заказ.
+P10_AD_CTR_DOWN,LH-010,synthetic_campaign_daily_stats,Кампания Поиск · Основные запросы,108653.78,104307.63,RUB,0.0,82,proven,Доля переходов в одной кампании снизилась после смены главного изображения.
+P11_PRICE_UP_CONVERSION_DOWN,LH-011,synthetic_price_and_card_funnel_history,Фактическая цена и доля заказов,1890.0,2154.6,RUB,183668.35,100,proven,"Посещаемость сохранилась, снижение началось после изменения фактической цены."
+P12_DELIVERY_TIME_DOWN,LH-012,synthetic_delivery_time_by_region,Москва и Московская область,2.0,5.0,days,394451.77,64,proven,В двух крупнейших регионах доставка выросла с 2 до 5 дней и снизилась доля заказов.
+P13_RATING_PACKAGING,LH-013,synthetic_return_reason_and_review_history,reviews,33.0,22.0,events,800686.59,91,proven,"Рейтинг снизился, большинство новых негативных отзывов относится к повреждению коробки."
+P14_CATEGORY_DEMAND_DOWN,LH-014,synthetic_period_metrics,product,3628269.32,2651732.52,RUB,976536.8,100,proven,Продажи сопоставимых товаров категории снизились в том же диапазоне.
+P15_COMPETITOR_GAIN,LH-015,synthetic_search_position_history,Три основных запроса,7.0,18.0,search_rank,1508875.01,88,proven,Цена конкурента стала ниже на 12%; его рейтинг и срок доставки не изменились.
+P16_UNITS_PER_ORDER_DOWN,LH-016,synthetic_period_metrics,product,715083.3,490372.54,RUB,224710.76,100,proven,После отмены скидки за комплект снизилось среднее число единиц в заказе.
+P17_PRICE_DOWN_NO_VOLUME,LH-017,synthetic_price_and_card_funnel_history,Фактическая цена и доля заказов,1190.0,1023.4,RUB,209786.72,100,proven,Снижение началось после увеличения скидки продавца.
+P18_PRICE_UP_VOLUME_DOWN_UNPROVEN,LH-018,synthetic_period_metrics,product,576110.43,460425.95,RUB,115684.48,100,insufficient,"Изменения цены, позиции и доставки произошли в одну неделю."
+P19_AD_COST_PER_ORDER_UP,LH-019,synthetic_campaign_daily_stats,Кампания Поиск · Основные запросы,169958.25,280431.11,RUB,110472.86,82,proven,Рост сосредоточен в одной кампании и запросах без заказов.
+P20_ADS_ATTRIBUTION_MISSING,LH-020,synthetic_period_metrics,product,1484215.7,1251206.91,RUB,233008.79,100,insufficient,Причину роста расхода определить нельзя без статистики кампаний.
+P21_LOGISTICS_WAREHOUSE,LH-021,synthetic_logistics_operations_by_warehouse,Коледино → Электросталь,99.96,154.92,RUB_per_sold_unit,39612.97,74,insufficient,Склад Коледино дал 39 613 ₽ из подтверждённой прибавки логистики; медианный срок доставки из Коледино и Электростали одинаков — 2 дня.
+P22_LOGISTICS_RETURNS,LH-022,synthetic_return_reason_and_review_history,returns,34.0,100.0,events,444284.83,91,proven,Коды операций и причины возврата указывают на несоответствие размера.
+P23_LOGISTICS_SHARE_PRICE_EFFECT,LH-023,synthetic_price_and_logistics_history,Фактическая цена и логистика на продажу,5990.0,5031.6,RUB_price,948778.62,100,proven,"Логистика на продажу не изменилась, фактическая цена снизилась."
+P24_STORAGE_EXCESS_STOCK,LH-024,synthetic_storage_operations_and_stock_history,Товар и склад,10869.57,27173.92,RUB,16304.35,100,proven,"Прямое хранение относится к товару, запаса хватит более чем на 90 дней."
+P25_STORAGE_ALLOCATED,LH-025,synthetic_period_metrics,product,805494.34,757039.47,RUB,48454.87,100,insufficient,Расход распределён по выручке и не содержит прямого ключа товара.
+P26_COMMISSION_TARIFF,LH-026,synthetic_marketplace_tariff_history,Пледы,18.0,20.0,percent,40289.6,100,proven,Дата и ставка нового тарифа совпадают с ростом комиссии.
+P27_RETURNS_COLOR_MISMATCH,LH-027,synthetic_return_reason_and_review_history,returns,22.0,61.0,events,150989.61,91,proven,Повторяющаяся причина возврата подтверждена текстами отзывов и карточками возврата.
+P28_CANCELLATIONS_DELIVERY,LH-028,synthetic_return_reason_and_review_history,cancellations,38.0,114.0,events,307635.64,91,proven,"Отмены сосредоточены в регионах, где доставка стала дольше четырёх дней."
+P29_NEGATIVE_RESULT_ADS,LH-029,synthetic_campaign_daily_stats,Кампания Поиск · Основные запросы,227842.56,2506268.16,RUB,2278425.6,82,proven,"Расход кампании превышает результат до рекламы, заказы кампании единичны."
+P30_NEGATIVE_ONE_RETURN,LH-030,synthetic_period_metrics,product,11766.44,-9870.78,RUB,21637.22,100,insufficient,За период было только две продажи и один возврат.
+P31_RESULT_DOWN_VOLUME,LH-031,synthetic_period_metrics,product,3998894.99,2727527.24,RUB,1271367.75,100,insufficient,Расходы на единицу стабильны; первоисточник снижения заказов ещё не подтверждён.
+P32_RESULT_DOWN_UNIT_COST,LH-032,synthetic_logistics_operations_by_warehouse,Коледино → Электросталь,178.77,243.12,RUB_per_sold_unit,51428.52,74,insufficient,Склад Коледино дал 51 429 ₽ из подтверждённой прибавки логистики; медианный срок доставки из Коледино и Электростали одинаков — 2 дня.
+P33_MONTH_DOWN_WEEK_RECOVERY,LH-033,synthetic_period_metrics,product,733085.08,541314.34,RUB,191770.74,100,proven,Заказы и результат растут две недели после устранения дефицита.
+P34_MONTH_UP_WEEK_DOWN,LH-034,synthetic_period_metrics,product,1053140.12,1280278.44,RUB,227138.32,100,proven,"Краткосрочное снижение сосредоточено в заказах, месячный результат положительный."
+P35_ONE_DAY_ALERT,LH-035,synthetic_period_metrics,product,1633745.28,1633745.28,RUB,0.0,100,proven,"Заказы ниже медианы шести таких же дней недели, остальные источники полны."
+P36_ONE_DAY_INCOMPLETE,LH-036,synthetic_period_metrics,product,981856.8,981856.8,RUB,0.0,100,insufficient,"Заказы загружены, финансовые операции и реклама ещё не завершены."
+P37_STOCK_3_DAYS,LH-037,synthetic_stock_history_by_warehouse,Продающие склады,30.0,2.4,stock_days,196994.42,98,proven,Текущий темп заказов и доступный остаток подтверждены по складам.
+P38_STOCK_7_DAYS,LH-038,synthetic_stock_history_by_warehouse,Продающие склады,30.0,6.1,stock_days,208867.11,98,proven,Остаток и темп заказов устойчивы две недели.
+P39_STOCK_DATA_MISSING,LH-039,synthetic_period_metrics,product,3623469.51,3370096.96,RUB,253372.55,100,insufficient,Достоверный риск дефицита рассчитать нельзя.
+P40_NEW_PRODUCT,LH-040,synthetic_period_metrics,product,7843.1,7843.1,RUB,0.0,100,insufficient,Товар продаётся меньше 14 дней.

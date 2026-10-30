@@ -77,6 +77,16 @@ function formatAxisMoney(value: unknown): string {
   return `${compactMoneyFmt.format(amount)} ₽`;
 }
 
+const chartAxisColor = '#6e628c';
+const chartGridColor = 'rgba(108, 70, 193, 0.12)';
+const chartTooltipStyle = {
+  background: 'rgba(255, 255, 255, 0.98)',
+  border: '1px solid rgba(108, 70, 193, 0.14)',
+  borderRadius: '16px',
+  color: '#251b3d',
+  boxShadow: '0 16px 36px rgba(73, 44, 138, 0.12)',
+};
+
 export function ProductDetailCharts({ daily }: Props) {
   const [activeTab, setActiveTab] = useState<ChartTab>('income');
   const [activeCostMode, setActiveCostMode] = useState<CostMode>('summary');
@@ -144,23 +154,24 @@ export function ProductDetailCharts({ daily }: Props) {
         <ResponsiveContainer width="100%" height="100%">
           {activeTab === 'income' ? (
             <LineChart data={rows} margin={{ top: 12, right: 16, left: 8, bottom: 20 }}>
-              <CartesianGrid stroke="rgba(148,163,184,0.16)" vertical={false} />
+              <CartesianGrid stroke={chartGridColor} vertical={false} />
               <XAxis
                 dataKey="day"
                 tickFormatter={formatDay}
-                tick={{ fill: '#94a3b8', fontSize: 11 }}
-                label={{ value: 'День', position: 'insideBottom', offset: -10, fill: '#94a3b8' }}
+                tick={{ fill: chartAxisColor, fontSize: 11 }}
+                label={{ value: 'День', position: 'insideBottom', offset: -10, fill: chartAxisColor }}
               />
               <YAxis
                 tickFormatter={formatAxisMoney}
-                tick={{ fill: '#94a3b8', fontSize: 11 }}
-                label={{ value: 'Рубли', angle: -90, position: 'insideLeft', fill: '#94a3b8' }}
+                tick={{ fill: chartAxisColor, fontSize: 11 }}
+                label={{ value: 'Рубли', angle: -90, position: 'insideLeft', fill: chartAxisColor }}
               />
               <Tooltip
                 labelFormatter={(value) => formatDay(value)}
                 formatter={(value: number, name: string) => [formatMoney(value), name]}
+                contentStyle={chartTooltipStyle}
               />
-              <Legend verticalAlign="top" height={28} wrapperStyle={{ color: '#cbd5e1', fontSize: '12px' }} />
+              <Legend verticalAlign="top" height={28} wrapperStyle={{ color: chartAxisColor, fontSize: '12px' }} />
               <Line type="monotone" dataKey="viruchka" name="Выручка" stroke="#22d3ee" strokeWidth={2.4} dot={false} />
               <Line
                 type="monotone"
@@ -173,23 +184,24 @@ export function ProductDetailCharts({ daily }: Props) {
             </LineChart>
           ) : activeTab === 'costs' ? (
             <LineChart data={rows} margin={{ top: 12, right: 16, left: 8, bottom: 20 }}>
-              <CartesianGrid stroke="rgba(148,163,184,0.16)" vertical={false} />
+              <CartesianGrid stroke={chartGridColor} vertical={false} />
               <XAxis
                 dataKey="day"
                 tickFormatter={formatDay}
-                tick={{ fill: '#94a3b8', fontSize: 11 }}
-                label={{ value: 'День', position: 'insideBottom', offset: -10, fill: '#94a3b8' }}
+                tick={{ fill: chartAxisColor, fontSize: 11 }}
+                label={{ value: 'День', position: 'insideBottom', offset: -10, fill: chartAxisColor }}
               />
               <YAxis
                 tickFormatter={formatAxisMoney}
-                tick={{ fill: '#94a3b8', fontSize: 11 }}
-                label={{ value: 'Рубли', angle: -90, position: 'insideLeft', fill: '#94a3b8' }}
+                tick={{ fill: chartAxisColor, fontSize: 11 }}
+                label={{ value: 'Рубли', angle: -90, position: 'insideLeft', fill: chartAxisColor }}
               />
               <Tooltip
                 labelFormatter={(value) => formatDay(value)}
                 formatter={(value: number, name: string) => [formatMoney(value), name]}
+                contentStyle={chartTooltipStyle}
               />
-              <Legend verticalAlign="top" height={28} wrapperStyle={{ color: '#cbd5e1', fontSize: '12px' }} />
+              <Legend verticalAlign="top" height={28} wrapperStyle={{ color: chartAxisColor, fontSize: '12px' }} />
               {activeCostMode === 'summary' ? (
                 <Line type="monotone" dataKey="total_costs" name="Суммарные расходы" stroke="#f97316" strokeWidth={2.6} dot={false} />
               ) : activeCostFilter === 'all' ? (
@@ -206,23 +218,24 @@ export function ProductDetailCharts({ daily }: Props) {
             </LineChart>
           ) : (
             <BarChart data={rows} margin={{ top: 12, right: 16, left: 8, bottom: 20 }}>
-              <CartesianGrid stroke="rgba(148,163,184,0.16)" vertical={false} />
+              <CartesianGrid stroke={chartGridColor} vertical={false} />
               <XAxis
                 dataKey="day"
                 tickFormatter={formatDay}
-                tick={{ fill: '#94a3b8', fontSize: 11 }}
-                label={{ value: 'День', position: 'insideBottom', offset: -10, fill: '#94a3b8' }}
+                tick={{ fill: chartAxisColor, fontSize: 11 }}
+                label={{ value: 'День', position: 'insideBottom', offset: -10, fill: chartAxisColor }}
               />
               <YAxis
                 tickFormatter={formatAxisMoney}
-                tick={{ fill: '#94a3b8', fontSize: 11 }}
-                label={{ value: 'Рубли', angle: -90, position: 'insideLeft', fill: '#94a3b8' }}
+                tick={{ fill: chartAxisColor, fontSize: 11 }}
+                label={{ value: 'Рубли', angle: -90, position: 'insideLeft', fill: chartAxisColor }}
               />
               <Tooltip
                 labelFormatter={(value) => formatDay(value)}
                 formatter={(value: number, name: string) => [formatMoney(value), name]}
+                contentStyle={chartTooltipStyle}
               />
-              <Legend verticalAlign="top" height={28} wrapperStyle={{ color: '#cbd5e1', fontSize: '12px' }} />
+              <Legend verticalAlign="top" height={28} wrapperStyle={{ color: chartAxisColor, fontSize: '12px' }} />
               <Bar dataKey="reklama" name="Реклама" stackId="costs" fill="#f59e0b" radius={[6, 6, 0, 0]} />
               <Bar dataKey="logistika" name="Логистика" stackId="costs" fill="#ef4444" />
               <Bar dataKey="komissiya" name="Комиссия" stackId="costs" fill="#38bdf8" />

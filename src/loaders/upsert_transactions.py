@@ -17,11 +17,14 @@ def upsert_stg_transaction(schema: str, rows: list[dict[str, Any]]) -> int:
         raise ValueError(f"Invalid schema name: {schema}")
     if not rows:
         return 0
+    for row in rows:
+        row.setdefault("marketplace", "ozon")
 
     query = sql.SQL(
         """
         INSERT INTO {schema}.stg_transaction (
             operation_id,
+            marketplace,
             operation_date,
             operation_type,
             operation_type_name,
@@ -35,6 +38,7 @@ def upsert_stg_transaction(schema: str, rows: list[dict[str, Any]]) -> int:
         )
         VALUES (
             %(operation_id)s,
+            %(marketplace)s,
             %(operation_date)s,
             %(operation_type)s,
             %(operation_type_name)s,
@@ -48,6 +52,7 @@ def upsert_stg_transaction(schema: str, rows: list[dict[str, Any]]) -> int:
         )
         ON CONFLICT (operation_id) DO UPDATE
         SET
+            marketplace = EXCLUDED.marketplace,
             operation_date = EXCLUDED.operation_date,
             operation_type = EXCLUDED.operation_type,
             operation_type_name = EXCLUDED.operation_type_name,
@@ -72,23 +77,28 @@ def upsert_stg_transaction_service(schema: str, rows: list[dict[str, Any]]) -> i
         raise ValueError(f"Invalid schema name: {schema}")
     if not rows:
         return 0
+    for row in rows:
+        row.setdefault("marketplace", "ozon")
 
     query = sql.SQL(
         """
         INSERT INTO {schema}.stg_transaction_service (
             operation_id,
+            marketplace,
             service_name,
             service_price,
             raw_updated_at
         )
         VALUES (
             %(operation_id)s,
+            %(marketplace)s,
             %(service_name)s,
             %(service_price)s,
             %(raw_updated_at)s
         )
         ON CONFLICT (operation_id, service_name) DO UPDATE
         SET
+            marketplace = EXCLUDED.marketplace,
             service_price = EXCLUDED.service_price,
             raw_updated_at = EXCLUDED.raw_updated_at,
             loaded_at = now()
@@ -105,23 +115,28 @@ def upsert_stg_transaction_item(schema: str, rows: list[dict[str, Any]]) -> int:
         raise ValueError(f"Invalid schema name: {schema}")
     if not rows:
         return 0
+    for row in rows:
+        row.setdefault("marketplace", "ozon")
 
     query = sql.SQL(
         """
         INSERT INTO {schema}.stg_transaction_item (
             operation_id,
+            marketplace,
             sku,
             item_name,
             raw_updated_at
         )
         VALUES (
             %(operation_id)s,
+            %(marketplace)s,
             %(sku)s,
             %(item_name)s,
             %(raw_updated_at)s
         )
         ON CONFLICT (operation_id, sku) DO UPDATE
         SET
+            marketplace = EXCLUDED.marketplace,
             item_name = EXCLUDED.item_name,
             raw_updated_at = EXCLUDED.raw_updated_at,
             loaded_at = now()

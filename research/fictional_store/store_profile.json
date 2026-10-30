@@ -1,0 +1,26 @@
+{
+  "store_name": "LUNARO HOME",
+  "fictional": true,
+  "marketplace": "Wildberries-like synthetic environment",
+  "niche": "Домашний текстиль",
+  "period_previous": {
+    "from": "2026-05-01",
+    "to": "2026-05-31"
+  },
+  "period_current": {
+    "from": "2026-06-01",
+    "to": "2026-06-30"
+  },
+  "last_full_operational_day": "2026-07-25",
+  "uses_cogs": false,
+  "product_count": 40,
+  "scenario_counts": {
+    "product": 40,
+    "store": 15,
+    "data_quality": 15
+  },
+  "previous_revenue": 106119630.0,
+  "current_revenue": 92296898.1,
+  "previous_result": 67155262.83,
+  "current_result": 52837433.15
+}

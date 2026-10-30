@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { CabinetLiveRefresh } from '@/components/cabinet/CabinetLiveRefresh';
 import { Sidebar } from '@/components/cabinet/Sidebar';
 
 import './globals.css';
@@ -26,9 +27,12 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="ru">
       <body className="font-[var(--font-jakarta)]">
+        <CabinetLiveRefresh />
         <div className="cabinet-shell">
           <Sidebar />
-          <main className="cabinet-main">{children}</main>
+          <main className="cabinet-main">
+            <div className="cabinet-main__inner">{children}</div>
+          </main>
         </div>
       </body>
     </html>
