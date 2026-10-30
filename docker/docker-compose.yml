@@ -1,15 +1,46 @@
-version: "3.9"
 services:
   postgres:
     image: postgres:16
     container_name: ozon_postgres
     environment:
-      POSTGRES_USER: ozon
-      POSTGRES_PASSWORD: ozon_pass
-      POSTGRES_DB: ozon_db
+      POSTGRES_USER: ${PGUSER:?Set PGUSER in the local .env file}
+      POSTGRES_PASSWORD: ${PGPASSWORD:?Set PGPASSWORD in the local .env file}
+      POSTGRES_DB: ${PGDATABASE:?Set PGDATABASE in the local .env file}
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
     volumes:
       - ozon_pgdata:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d \"$${POSTGRES_DB}\""]
+      interval: 5s
+      timeout: 3s
+      retries: 15
+      start_period: 10s
+
+  profit_control_runtime:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.runtime
+    container_name: profit_control_runtime
+    depends_on:
+      postgres:
+        condition: service_healthy
+    env_file:
+      - ../.env
+    environment:
+      PGHOST: postgres
+      PGPORT: 5432
+      PROFIT_CONTROL_RUNTIME_LOOKBACK_DAYS: 90
+      PROFIT_CONTROL_RUNTIME_WB_HISTORY_DAYS: 90
+      PROFIT_CONTROL_RUNTIME_LOOP_SEC: 86400
+      PROFIT_CONTROL_MARTS_WINDOW_DAYS: 90
+      PROFIT_CONTROL_SERIES_TOTAL_DAYS: 90
+    working_dir: /app
+    volumes:
+      - ..:/app
+    command: ["python", "scripts/run_profit_control_canonical_runtime_v1.py"]
+    restart: unless-stopped
+
 volumes:
   ozon_pgdata:

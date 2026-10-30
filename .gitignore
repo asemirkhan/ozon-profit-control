@@ -7,6 +7,15 @@ web/out/
 web/.env.local
 web/.env.*.local
 
+# Node / Next.js (cabinet)
+cabinet/node_modules/
+cabinet/.next/
+cabinet/out/
+
+# local env for cabinet
+cabinet/.env.local
+cabinet/.env.*.local
+
 # macOS
 .DS_Store
 
@@ -22,3 +31,22 @@ __pycache__/
 
 # raw data
 data/
+
+# archived legacy material
+archive/
+
+# local extracts, reports, screenshots, and run state (never stage as project source)
+/artifacts/
+/check/
+/exports/
+/logs/
+/test_artifacts/
+/.runtime_locks/
+
+# generated cabinet payloads and downloaded marketplace images
+/cabinet/data/
+/cabinet/public/wb-products/
+/cabinet/public/wb-competitors/
+
+# generated compiler metadata
+*.tsbuildinfo
